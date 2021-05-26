@@ -9,6 +9,8 @@ import org.jsoup.select.Elements;
 
 import javax.print.Doc;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
@@ -23,6 +25,7 @@ public class Main {
         Integer cantImages = CountImages(doc_url);
         Integer cantFormsByPost = CountForms(doc_url, "post");
         Integer cantFormsByGet = CountForms(doc_url, "get");
+        ShowFormInputs(doc_url);
 
 
 
@@ -71,8 +74,21 @@ public class Main {
         formElements = document.select("form[method="+type.toLowerCase()+"]");
         cantFormsByMethod = formElements.size();
         System.out.println(cantFormsByMethod);
+        System.out.println(formElements);
         return cantFormsByMethod;
 
+    }
+    //Mostrar los inputs de los formularios y su tipo
+    public static void ShowFormInputs(Document document){
+        Elements inputsForms = document.select("form input");
+        System.out.println(inputsForms);
+        Map<String, String> inputType = new HashMap<>();
+        Integer cantInputForm = 0;
+        for (Element input : inputsForms) {
+            cantInputForm++;
+            inputType.put("Input-"+cantInputForm, input.attr("type"));
+        }
+        System.out.println(cantInputForm +"  "+inputType);
     }
 
 
