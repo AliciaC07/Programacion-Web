@@ -91,6 +91,11 @@ public class Main {
         System.out.println(cantInputForm +"  "+inputType);
     }
 
+    //Realizar el envio de datos para un form con metodo post y enviar header
+    public static void FormParamsHeader(String url){
+
+    }
+
 
     public static Document ConnectionUrl(String url) throws IOException {
         return Jsoup.connect(url).get();
