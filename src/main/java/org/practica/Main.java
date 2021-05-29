@@ -1,20 +1,16 @@
 package org.practica;
 
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.FormElement;
 import org.jsoup.select.Elements;
-
-import javax.print.Doc;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
-
     public static void main(String[] args) throws IOException {
         String url = EnterUrl();
         System.out.println(url);
@@ -30,7 +26,9 @@ public class Main {
             selectedOption = Integer.parseInt(scan.next());
             switch (selectedOption){
                 case 1:
-                    Integer cantLines = CountLines(url);
+                    Map<String, Integer> response = CountLines(url);
+                    ///System.out.println(response);
+                    Integer cantLines = response.get("Lineas");
                     System.out.println("La cantidad es de: "+cantLines);
                     break;
                 case 2:
@@ -73,12 +71,13 @@ public class Main {
     }
 
     ///Cantidad de lineas de la url dada
-    public static Integer CountLines(String url) throws IOException {
+    public static Map<String, Integer> CountLines(String url) throws IOException {
         String body = Jsoup.connect(url).execute().body();
         ///System.out.println(body);
+        Map<String, Integer> bodySave = new HashMap<>();
         String[] bodyArr = body.split("\n");
-        //System.out.println(bodyArr.length);
-        return bodyArr.length;
+        bodySave.put("Lineas", bodyArr.length);
+        return bodySave;
 
     }
     //Cantidad de parrafos que contiene el HTML
