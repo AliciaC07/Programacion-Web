@@ -1,9 +1,12 @@
 package org.practica;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import javax.print.Doc;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,8 +17,10 @@ public class Main {
     public static void main(String[] args) throws IOException {
         String url = EnterUrl();
         System.out.println(url);
-        Document doc_url = ConnectionUrl(url);
+        Map<String, Connection> connectionMap = ConnectionUrl(url);
+        Document doc_url = connectionMap.get("Conection").get();
         System.out.println(doc_url.title());
+
         Integer selectedOption = 0;
 
         do {
@@ -26,7 +31,7 @@ public class Main {
             selectedOption = Integer.parseInt(scan.next());
             switch (selectedOption){
                 case 1:
-                    Map<String, Integer> response = CountLines(url);
+                    Map<String, Integer> response = CountLines(connectionMap.get("Conection").execute().body());
                     ///System.out.println(response);
                     Integer cantLines = response.get("Lineas");
                     System.out.println("La cantidad es de: "+cantLines);
@@ -71,9 +76,7 @@ public class Main {
     }
 
     ///Cantidad de lineas de la url dada
-    public static Map<String, Integer> CountLines(String url) throws IOException {
-        String body = Jsoup.connect(url).execute().body();
-        ///System.out.println(body);
+    public static Map<String, Integer> CountLines(String body) throws IOException {
         Map<String, Integer> bodySave = new HashMap<>();
         String[] bodyArr = body.split("\n");
         bodySave.put("Lineas", bodyArr.length);
@@ -145,10 +148,14 @@ public class Main {
 
     }
 
-
-    public static Document ConnectionUrl(String url) throws IOException {
-        return Jsoup.connect(url).get();
+    public static Map<String, Connection> ConnectionUrl(String url){
+        Map<String,Connection> conection = new HashMap<>();
+        conection.put("Conection",Jsoup.connect(url));
+        return conection;
     }
+
+
+
 
     public static String EnterUrl(){
         System.out.println("Introduzca la URL que desea examinar: ");
