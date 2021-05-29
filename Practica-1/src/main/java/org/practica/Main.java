@@ -20,7 +20,7 @@ public class Main {
 
         do {
             System.out.println("\nSeleccione una de las opciones o seleccione 0 si desea salir: \n 1-) Cantidad de líneas retornadas. \n 2-) Cantidad de párrafos (p).\n" +
-                    " 3-) Cantidad de imágenes. \n 4-) Cantidad de formularios por Metodos(POST y GET). \n 5-) Cada formulario mostrar los campos de input y su tipo." +
+                    " 3-) Cantidad de imágenes dentro de párrafos. \n 4-) Cantidad de formularios por Metodos(POST y GET). \n 5-) Cada formulario mostrar los campos de input y su tipo." +
                     "\n 6-) Identificar que el método de envío del formulario sea POST y enviar una petición al servidor. \n");
             Scanner scan = new Scanner(System.in);
             selectedOption = Integer.parseInt(scan.next());
