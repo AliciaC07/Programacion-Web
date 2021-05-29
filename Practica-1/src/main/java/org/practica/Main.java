@@ -76,7 +76,7 @@ public class Main {
     }
 
     ///Cantidad de lineas de la url dada
-    public static Map<String, Integer> CountLines(String body) throws IOException {
+    public static Map<String, Integer> CountLines(String body){
         Map<String, Integer> bodySave = new HashMap<>();
         String[] bodyArr = body.split("\n");
         bodySave.put("Lineas", bodyArr.length);
@@ -153,9 +153,6 @@ public class Main {
         conection.put("Conection",Jsoup.connect(url));
         return conection;
     }
-
-
-
 
     public static String EnterUrl(){
         System.out.println("Introduzca la URL que desea examinar: ");
