@@ -139,13 +139,12 @@ public class Main {
         for (Element formSelected : postForms) {
             countForms++;
             String abosluteUrl = formSelected.absUrl("action");
-            Document documentResponse = Jsoup.connect(abosluteUrl).data("asignatura", "practica-1").header("matricula", matricula).post();
+            Document documentResponse = Jsoup.connect(abosluteUrl)
+                    .data("asignatura", "practica-1")
+                    .header("matricula", matricula).post();
             formsSave.put("Form-"+countForms, documentResponse);
             System.out.println(formsSave.get("Form-"+countForms).body());
         }
-
-
-
     }
 
     public static Map<String, Connection> ConnectionUrl(String url){
