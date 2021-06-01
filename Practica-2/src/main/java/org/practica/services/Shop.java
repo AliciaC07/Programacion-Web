@@ -44,7 +44,9 @@ public class Shop {
     }
     public User authUser(String userName, String password){
         User user = FindCUserByUsername(userName);
-        if (user.getPassword().equalsIgnoreCase(password)){
+        if (user == null){
+            return null;
+        }else if (user.getPassword().equalsIgnoreCase(password)){
             return user;
         }
         return null;
@@ -70,32 +72,42 @@ public class Shop {
     }
 
     public Product FindProductById(Integer id){
-        Product product = new Product();
+
         for (Product aux: products) {
-            if (aux.getId() == id){
-                product = aux;
+            if (aux.getId().equals(id)){
+                return aux;
             }
         }
-        return product;
+        return null;
+    }
+
+    public Product createProduct(String name, Float price, Integer amount){
+        Product product = new Product(1, name, price, amount);
+        if (products == null){
+            products.add(product);
+            return product;
+        }else {
+            products.add(product);
+            return product;
+        }
     }
 
     public Client FindClientByEmail(String email){
-        Client client = new Client();
+
         for (Client aux: clients) {
-            if (aux.getEmail() == email){
-                client = aux;
+            if (aux.getEmail().equals(email)){
+                return aux;
             }
         }
-        return client;
+        return null;
     }
     public User FindCUserByUsername(String userName){
-        User user = new User();
         for (User aux: users) {
             if (aux.getUserName().equals(userName)){
-                user = aux;
+                return aux;
             }
         }
-        return user;
+        return null;
     }
 
 

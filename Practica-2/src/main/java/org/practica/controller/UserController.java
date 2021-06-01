@@ -26,6 +26,17 @@ public class UserController {
                     ctx.render("/public/login.html",model);
                 });
 
+                get("/logout", ctx -> {
+//                    String id = ctx.req.getSession().getId();
+//                    System.out.println(id);
+                    ctx.req.getSession().invalidate();
+                    if (ctx.cookie("userName") != null){
+                        ctx.removeCookie("userName","/");
+                    }
+
+                    ctx.redirect("/product");
+                });
+
                 post("/login", ctx -> {
                     Map<String, Object> model = new HashMap<>();
                     String userName = ctx.formParam("userName");
@@ -44,6 +55,9 @@ public class UserController {
                         //crear user
                         System.out.println(ctx.formParam("signed"));
                         User newUser = shop.createUser(userName, password);
+                        if (ctx.formParam("signed").equals("on")){
+                            ctx.cookie("userName", newUser.getUserName(), 400000);
+                        }
                         ctx.sessionAttribute("user", newUser);
 
 
