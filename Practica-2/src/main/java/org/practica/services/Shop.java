@@ -87,6 +87,7 @@ public class Shop {
             products.add(product);
             return product;
         }else {
+            product.setId(products.size()+1);
             products.add(product);
             return product;
         }
