@@ -50,7 +50,7 @@
                             <td class="text-center">
                                 <a th:href="'/product/edit/'+${product.id}" th:hidden="!${isLogged}"><button type="button" class="btn btn-warning">Edit</button></a>
                                 <a th:href="'/product/delete/'+${product.id}" th:hidden="!${isLogged}" ><button type="button" class="btn btn-danger">Delete</button></a>
-                                <a th:href="'/product/buy/'+${product.id}" th:hidden="${isLogged}"><button type="button" class="btn btn-success">Buy</button></a>
+                                <a th:href="'/product/buy/'+${product.id}" th:hidden="${isLogged}" ><button type="button" class="btn btn-success">Buy</button></a>
 
 
                             </td>

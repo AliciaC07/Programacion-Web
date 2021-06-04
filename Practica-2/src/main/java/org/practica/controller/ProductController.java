@@ -2,8 +2,10 @@ package org.practica.controller;
 
 import io.javalin.Javalin;
 import org.practica.models.Product;
+import org.practica.models.ShoppingCart;
 import org.practica.services.Shop;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -110,9 +112,68 @@ public class ProductController {
                     }else {
                         model.put("isLogged", false);
                     }
-
                     ctx.render("/public/product.html", model);
 
+
+                });
+
+                post("/buy/:id", ctx -> {
+                    ArrayList<Product> productsCart = new ArrayList<>();
+                    ShoppingCart shoppingCart = new ShoppingCart();
+                    Product product = shop.FindProductById(ctx.pathParam("id", Integer.class).get());
+                    Product productselected = new Product();
+                    productselected.setId(product.getId());
+                    productselected.setName(product.getName());
+                    productselected.setPrice(product.getPrice());
+                    Integer amountSelected = ctx.formParam("quantity", Integer.class).get();
+                    productselected.setAmount(amountSelected);
+                    product.setAmount(product.getAmount()- amountSelected);
+                    shop.updateProduct(product.getName(),product.getAmount(), product.getPrice(),product.getId());
+                    if (ctx.sessionAttribute("cart") == null){
+                       shop.createShoppingCart(shoppingCart);
+                       productsCart.add(productselected);
+                       shoppingCart.setProducts(productsCart);
+                        ctx.sessionAttribute("cart", shoppingCart);
+                        System.out.println(shoppingCart.getProducts().size());
+                        for (Product aux: shoppingCart.getProducts()) {
+                            System.out.println(aux.getName());
+                        }
+
+                    }else {
+                        ShoppingCart shoppingCartFound = ctx.sessionAttribute("cart");
+                        System.out.println(shoppingCartFound.getProducts().size());
+
+                        shoppingCart = shop.findShoppingCartById(shoppingCartFound.getId());
+                        shoppingCart.getProducts().add(productselected);
+                        ctx.sessionAttribute("cart", shoppingCart);
+                        for (Product aux: shoppingCart.getProducts()) {
+                            System.out.println(aux.getName());
+                        }
+
+                    }
+                    ctx.redirect("/product");
+
+                });
+
+                get("/shopping-cart", ctx -> {
+                    Map<String, Object> model = new HashMap<>();
+                    model.put("title", "ShoppingCart");
+                    if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
+                        model.put("isLogged", true);
+                    }else {
+                        model.put("isLogged", false);
+                    }
+                    if (ctx.sessionAttribute("cart") != null){
+                        ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
+                        ArrayList<Product> products = shoppingCart.getProducts();
+                        model.put("cartProducts", products);
+                    }else {
+                        ArrayList<Product> products = new ArrayList<>();
+                        model.put("cartProducts", products);
+                        model.put("empty", true);
+                    }
+
+                    ctx.render("/public/shoppingCart.html", model);
 
                 });
             });

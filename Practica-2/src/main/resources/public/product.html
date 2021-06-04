@@ -54,7 +54,7 @@
 
         <div class="form-group" th:hidden="${isLogged}">
           <label class="col-form-label mt-3"   for="inQuantity">Quantity</label>
-          <input type="text" class="form-control"  name="quantity" th:value="'1'"  placeholder="Product amount" id="inQuantity" required>
+          <input type="text" class="form-control" th:disabled="${product.amount} > 0 ? false : true" name="quantity" th:value="'1'"  placeholder="Product amount" id="inQuantity" required>
         </div>
         <input id="buy" th:value="${buying} ? true : false" th:hidden="true">
 

@@ -1,9 +1,6 @@
 package org.practica.services;
 
-import org.practica.models.Client;
-import org.practica.models.Product;
-import org.practica.models.Receipt;
-import org.practica.models.User;
+import org.practica.models.*;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -14,12 +11,14 @@ public class Shop {
     private ArrayList<Product> products = new ArrayList<>();
     private ArrayList<User> users = new ArrayList<>();
     private ArrayList<Receipt> receipts = new ArrayList<>();
+    private ArrayList<ShoppingCart> shoppingCarts = new ArrayList<>();
 
     private Shop() {
         products.add(new Product(1, "Milk", 10.00f, 3));
         products.add(new Product(2, "Bread", 5.00f, 2));
         products.add(new Product(3, "Soap", 2.00f, 3));
         products.add(new Product(4, "Beer", 15.00f, 3));
+        products.add(new Product(5, "Paper", 15.00f, 0));
         users.add(new User(1, "aliciac07", "123"));
 
     }
@@ -51,6 +50,16 @@ public class Shop {
         }else {
             throw new NoSuchElementException("This product doesn't exists");
         }
+    }
+    public ShoppingCart createShoppingCart(ShoppingCart shoppingCart){
+        if (shoppingCarts == null){
+            shoppingCart.setId(1);
+
+        }else{
+            shoppingCart.setId(shoppingCarts.size()+1);
+        }
+        shoppingCarts.add(shoppingCart);
+        return shoppingCart;
     }
 
     public void AddProducts(Product product){
@@ -99,6 +108,15 @@ public class Shop {
         for (Product aux: products) {
             if (aux.getId().equals(id)){
                 return aux;
+            }
+        }
+        return null;
+    }
+
+    public ShoppingCart findShoppingCartById(Integer id){
+        for (ShoppingCart cart: shoppingCarts) {
+            if (cart.getId().equals(id)){
+                return cart;
             }
         }
         return null;
