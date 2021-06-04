@@ -59,7 +59,7 @@
         <input id="buy" th:value="${buying} ? true : false" th:hidden="true">
 
         <button type="submit" class="btn btn-primary" th:hidden="${buying}" th:text="${product} ? 'Edit' : 'Create'" >Create</button>
-        <button type="submit" class="btn btn-success"   th:hidden= "${isLogged} ">Add to cart</button>
+        <button type="submit" class="btn btn-success" th:disabled="${product.amount} > 0 ? false : true"  th:hidden= "${isLogged} ">Add to cart</button>
         <a class="btn btn-danger" href="/product">Cancel</a>
       </fieldset>
     </form>

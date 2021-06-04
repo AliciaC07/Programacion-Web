@@ -134,21 +134,29 @@ public class ProductController {
                        productsCart.add(productselected);
                        shoppingCart.setProducts(productsCart);
                         ctx.sessionAttribute("cart", shoppingCart);
-                        System.out.println(shoppingCart.getProducts().size());
+
                         for (Product aux: shoppingCart.getProducts()) {
                             System.out.println(aux.getName());
                         }
 
                     }else {
                         ShoppingCart shoppingCartFound = ctx.sessionAttribute("cart");
-                        System.out.println(shoppingCartFound.getProducts().size());
-
                         shoppingCart = shop.findShoppingCartById(shoppingCartFound.getId());
+
+                        for (Product aux :  shoppingCart.getProducts()) {
+                            if (aux.getId().equals(productselected.getId())){
+                                aux.setAmount(aux.getAmount()+productselected.getAmount());
+                                ctx.sessionAttribute("cart", shoppingCart);
+                                ctx.redirect("/product");
+                                return;
+                            }
+                        }
                         shoppingCart.getProducts().add(productselected);
                         ctx.sessionAttribute("cart", shoppingCart);
-                        for (Product aux: shoppingCart.getProducts()) {
-                            System.out.println(aux.getName());
-                        }
+
+//                        for (Product aux: shoppingCart.getProducts()) {
+//                            System.out.println(aux.getName());
+//                        }
 
                     }
                     ctx.redirect("/product");
@@ -158,6 +166,7 @@ public class ProductController {
                 get("/shopping-cart", ctx -> {
                     Map<String, Object> model = new HashMap<>();
                     model.put("title", "ShoppingCart");
+                    model.put("cartList", "Car List");
                     if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
                         model.put("isLogged", true);
                     }else {
@@ -166,6 +175,9 @@ public class ProductController {
                     if (ctx.sessionAttribute("cart") != null){
                         ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
                         ArrayList<Product> products = shoppingCart.getProducts();
+                        for (Product aux: products) {
+                            System.out.println(aux.getName() + aux.getId() + aux.getPrice() + aux.getAmount());
+                        }
                         model.put("cartProducts", products);
                     }else {
                         ArrayList<Product> products = new ArrayList<>();
