@@ -6,6 +6,7 @@ import org.practica.models.Receipt;
 import org.practica.models.User;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 public class Shop {
     private static Shop shop = null;
@@ -16,9 +17,9 @@ public class Shop {
 
     private Shop() {
         products.add(new Product(1, "Milk", 10.00f, 3));
-        products.add(new Product(1, "Bread", 5.00f, 2));
-        products.add(new Product(1, "Soap", 2.00f, 3));
-        products.add(new Product(1, "Beer", 15.00f, 3));
+        products.add(new Product(2, "Bread", 5.00f, 2));
+        products.add(new Product(3, "Soap", 2.00f, 3));
+        products.add(new Product(4, "Beer", 15.00f, 3));
         users.add(new User(1, "aliciac07", "123"));
 
     }
@@ -28,6 +29,28 @@ public class Shop {
             shop = new Shop();
         }
         return shop;
+    }
+    public Product updateProduct(String name, Integer amount, Float price, Integer id){
+        Product productFound = FindProductById(id);
+        if (productFound != null){
+            productFound.setAmount(amount);
+            productFound.setPrice(price);
+            productFound.setName(name);
+
+        }else {
+            throw new NoSuchElementException("This product doesn't exists");
+        }
+        return productFound;
+
+    }
+    public void deleteProduct(Integer id){
+        Product product = FindProductById(id);
+        if (product != null){
+            products.remove(product);
+
+        }else {
+            throw new NoSuchElementException("This product doesn't exists");
+        }
     }
 
     public void AddProducts(Product product){

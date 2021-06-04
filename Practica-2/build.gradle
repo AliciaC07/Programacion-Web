@@ -24,6 +24,10 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 
     compile "org.thymeleaf:thymeleaf:3.0.11.RELEASE"
+
+    // https://mvnrepository.com/artifact/org.hotswapagent/hotswap-agent-core
+    implementation group: 'org.hotswapagent', name: 'hotswap-agent-core', version: '1.4.1'
+
 }
 
 test {

@@ -3,6 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.css" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    function caution() {
+      const amount = document.getElementById("inQuantity").value;
+      const stock = document.getElementById("inAmount").value;
+      const buying = document.getElementById("buy").value;
+      // console.log(buying);
+      // console.log(amount);
+      // console.log(stock);
+      if (amount > stock && buying){
+        $("#inQuantity").addClass("is-invalid");
+        alert("The given quantity is not valid");
+
+        return false;
+      }else if (!buying){
+        return true;
+      }
+    }
+  </script>
   <title th:text="${title}">Prueba</title>
 </head>
 <body>
@@ -11,29 +30,37 @@
 <div class="row justify-content-md-center align-items-center" style="margin-top: 50px">
   <div class="col"></div>
   <div class="card-body">
-    <form id="form-login" enctype="application/x-www-form-urlencoded" method="post" th:attr="action=${action_form}" >
+    <form id="form-login" enctype="application/x-www-form-urlencoded" onsubmit="return caution()" method="post" th:attr="action=${action_form}" >
       <fieldset>
         <legend>Create Product</legend>
         <div class="form-group">
           <label for="userName" class="form-label mt-4">Name</label>
-          <input type="text" name="name" th:value="${product} ? ${product.name} : ''" class="form-control" id="userName" aria-describedby="emailHelp" placeholder="Product name" required>
+          <input type="text" name="name" th:readonly="${buying}" th:value="${product} ? ${product.name} : ''" class="form-control" id="userName" aria-describedby="emailHelp" placeholder="Product name" required>
         </div>
         <div class="form-group">
           <label class="form-label mt-4">Price</label>
           <div class="form-group">
             <div class="input-group mb-3">
               <span class="input-group-text">$</span>
-              <input type="number" class="form-control" name="price" th:value="${product} ? ${product.price} : ''" aria-label="Amount (to the nearest dollar)">
+              <input type="number" class="form-control" th:readonly="${buying}" name="price" th:value="${product} ? ${product.price} : ''" aria-label="Amount (to the nearest dollar)">
               <span class="input-group-text">.00</span>
             </div>
           </div>
         </div>
         <div class="form-group">
-          <label class="col-form-label mt-3" for="inputDefault">Amount</label>
-          <input type="text" class="form-control" name="amount" th:value="${product} ? ${product.amount} : ''" placeholder="Product amount" id="inputDefault" required>
+          <label class="col-form-label mt-3 is-invalid" th:text="${buying} ? 'Available' : 'Amount'"  for="inAmount">Amount</label>
+          <input type="text" class="form-control" th:readonly="${buying} "name="amount" th:value="${product} ? ${product.amount} : ''" placeholder="Product amount" id="inAmount" required>
         </div>
 
-        <button type="submit" class="btn btn-primary">Create</button>
+        <div class="form-group" th:hidden="${isLogged}">
+          <label class="col-form-label mt-3"   for="inQuantity">Quantity</label>
+          <input type="text" class="form-control"  name="quantity" th:value="'1'"  placeholder="Product amount" id="inQuantity" required>
+        </div>
+        <input id="buy" th:value="${buying} ? true : false" th:hidden="true">
+
+        <button type="submit" class="btn btn-primary" th:hidden="${buying}" th:text="${product} ? 'Edit' : 'Create'" >Create</button>
+        <button type="submit" class="btn btn-success"   th:hidden= "${isLogged} ">Add to cart</button>
+        <a class="btn btn-danger" href="/product">Cancel</a>
       </fieldset>
     </form>
   </div>
