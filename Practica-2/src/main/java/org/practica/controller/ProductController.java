@@ -38,8 +38,10 @@ public class ProductController {
 
                 get("/create", ctx -> {
                     Map<String, Object> model = new HashMap<>();
+                    Product product = new Product();
                     model.put("title", "Create Product");
                     model.put("action_form", "/product/create");
+                    model.put("action", "Create Product");
                     model.put("buying", false);
                     if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
                         model.put("isLogged", true);
@@ -57,6 +59,7 @@ public class ProductController {
                     }
                     model.put("product", product);
                     model.put("title", "Edit Product");
+                    model.put("action", "Edit Product");
                     model.put("action_form", "/product/edit/"+product.getId());
                     model.put("buying", false);
                     if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
@@ -100,10 +103,30 @@ public class ProductController {
                     ctx.redirect("/product");
                 });
 
+                get("/buy/remove/:id", ctx -> {
+                    ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
+                    Integer idProduct = ctx.pathParam("id", Integer.class).get();
+                    shoppingCart = shop.deleteFromCart(shoppingCart, idProduct);
+
+                    ctx.sessionAttribute("cart", shoppingCart);
+
+                    ctx.redirect("/product/shopping-cart");
+
+                });
+                get("/buy/remove-all", ctx -> {
+                    ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
+                    System.out.println("entro");
+                    shoppingCart = shop.removeAllFromCart(shoppingCart);
+                    ctx.sessionAttribute("cart", shoppingCart);
+                    ctx.redirect("/product/shopping-cart");
+
+                });
+
                 get("/buy/:id",ctx -> {
                     Product product = shop.FindProductById(ctx.pathParam("id", Integer.class).get());
                     Map<String, Object> model = new HashMap<>();
                     model.put("title", "Buy Product");
+                    model.put("action", "Buy Product");
                     model.put("buying", true);
                     model.put("action_form", "/product/buy/"+product.getId());
                     model.put("product", product);
@@ -145,7 +168,7 @@ public class ProductController {
 
                         for (Product aux :  shoppingCart.getProducts()) {
                             if (aux.getId().equals(productselected.getId())){
-                                aux.setAmount(aux.getAmount()+productselected.getAmount());
+                                aux.setAmount(aux.getAmount() + productselected.getAmount());
                                 ctx.sessionAttribute("cart", shoppingCart);
                                 ctx.redirect("/product");
                                 return;
@@ -179,10 +202,12 @@ public class ProductController {
                             System.out.println(aux.getName() + aux.getId() + aux.getPrice() + aux.getAmount());
                         }
                         model.put("cartProducts", products);
+                        model.put("total", shoppingCart.getTotal());
                     }else {
                         ArrayList<Product> products = new ArrayList<>();
                         model.put("cartProducts", products);
                         model.put("empty", true);
+                        model.put("total", "00");
                     }
 
                     ctx.render("/public/shoppingCart.html", model);

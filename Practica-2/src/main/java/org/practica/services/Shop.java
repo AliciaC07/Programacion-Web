@@ -98,6 +98,24 @@ public class Shop {
         }
         return newUser;
     }
+    public ShoppingCart deleteFromCart(ShoppingCart shoppingCart, Integer idProduct){
+        Product productBack = FindProductById(idProduct);
+        for (Product aux: shoppingCart.getProducts()) {
+            if (aux.getId().equals(productBack.getId())){
+                productBack.setAmount(productBack.getAmount() + aux.getAmount());
+                updateProduct(productBack.getName(), productBack.getAmount(), productBack.getPrice(), idProduct);
+                shoppingCart.getProducts().remove(aux);
+                return shoppingCart;
+            }
+        }
+        return null;
+    }
+    public ShoppingCart removeAllFromCart(ShoppingCart shoppingCart){
+        for (int i = shoppingCart.getProducts().size() - 1; i >= 0; i--) {
+            deleteFromCart(shoppingCart, shoppingCart.getProducts().get(i).getId());
+        }
+        return shoppingCart;
+    }
 
     public ArrayList<Product> getAllProducts(){
         return products;

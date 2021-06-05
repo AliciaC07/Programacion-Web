@@ -32,7 +32,7 @@
   <div class="card-body">
     <form id="form-login" enctype="application/x-www-form-urlencoded" onsubmit="return caution()" method="post" th:attr="action=${action_form}" >
       <fieldset>
-        <legend>Create Product</legend>
+        <legend th:text="${action}">Create Product</legend>
         <div class="form-group">
           <label for="userName" class="form-label mt-4">Name</label>
           <input type="text" name="name" th:readonly="${buying}" th:value="${product} ? ${product.name} : ''" class="form-control" id="userName" aria-describedby="emailHelp" placeholder="Product name" required>
@@ -54,12 +54,12 @@
 
         <div class="form-group" th:hidden="${isLogged}">
           <label class="col-form-label mt-3"   for="inQuantity">Quantity</label>
-          <input type="text" class="form-control" th:disabled="${product.amount} > 0 ? false : true" name="quantity" th:value="'1'"  placeholder="Product amount" id="inQuantity" required>
+          <input type="text" class="form-control" th:disabled="${product} ? (${product.amount} > 0 ? false : true) : false" name="quantity" th:value="'1'"  placeholder="Product amount" id="inQuantity" required>
         </div>
         <input id="buy" th:value="${buying} ? true : false" th:hidden="true">
 
         <button type="submit" class="btn btn-primary" th:hidden="${buying}" th:text="${product} ? 'Edit' : 'Create'" >Create</button>
-        <button type="submit" class="btn btn-success" th:disabled="${product.amount} > 0 ? false : true"  th:hidden= "${isLogged} ">Add to cart</button>
+        <button type="submit" class="btn btn-success" th:disabled="${product} ? (${product.amount} > 0 ? false : true) : true"  th:hidden= "${isLogged} ">Add to cart</button>
         <a class="btn btn-danger" href="/product">Cancel</a>
       </fieldset>
     </form>

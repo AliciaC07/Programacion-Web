@@ -19,5 +19,12 @@ public class ShoppingCart {
         this.id = id;
         this.products = products;
     }
+    public Float getTotal(){
+        Float total = 0f;
+        for (Product aux: products) {
+            total += aux.getPrice() * aux.getAmount();
+        }
+        return total;
+    }
 
 }
