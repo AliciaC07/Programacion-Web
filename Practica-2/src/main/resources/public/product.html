@@ -6,12 +6,12 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script type="text/javascript">
     function caution() {
-      const amount = document.getElementById("inQuantity").value;
-      const stock = document.getElementById("inAmount").value;
+      const amount = parseInt(document.getElementById("inQuantity").value);
+      const stock = parseInt(document.getElementById("inAmount").value);
       const buying = document.getElementById("buy").value;
-      // console.log(buying);
-      // console.log(amount);
-      // console.log(stock);
+      console.log(buying);
+       console.log(amount);
+      console.log(stock);
       if (amount > stock && buying){
         $("#inQuantity").addClass("is-invalid");
         alert("The given quantity is not valid");
@@ -54,12 +54,12 @@
             </div>
             <div class="form-group">
               <label class="col-form-label mt-3 is-invalid" th:text="${buying} ? 'Available' : 'Amount'"  for="inAmount">Amount</label>
-              <input type="text" class="form-control" th:readonly="${buying} "name="amount" th:value="${product} ? ${product.amount} : ''" placeholder="Product amount" id="inAmount" required>
+              <input type="text" class="form-control" th:readonly="${buying} "name="amount" th:value="${product} ? ${product.amount} : ''" placeholder="Product stock" id="inAmount" required>
             </div>
 
             <div class="form-group" th:hidden="${isLogged}">
               <label class="col-form-label mt-3"   for="inQuantity">Quantity</label>
-              <input type="text" class="form-control" th:disabled="${product} ? (${product.amount} > 0 ? false : true) : false" name="quantity" th:value="'1'"  placeholder="Product amount" id="inQuantity" required>
+              <input type="text" class="form-control" th:disabled="${product} ? (${product.amount} > 0 ? false : true) : false" name="quantity" th:value="'1'"  placeholder="Product quantity" id="inQuantity" required>
             </div>
             <input id="buy" th:value="${buying} ? true : false" th:hidden="true">
 

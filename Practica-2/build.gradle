@@ -6,6 +6,8 @@ plugins {
 group 'org.practica'
 version '1.0-SNAPSHOT'
 
+mainClassName = 'org.practica.Main'
+
 repositories {
     mavenCentral()
 }
