@@ -5,6 +5,7 @@ import io.javalin.core.util.RouteOverviewPlugin;
 import io.javalin.plugin.rendering.JavalinRenderer;
 import io.javalin.plugin.rendering.template.JavalinThymeleaf;
 import org.practica.controller.ProductController;
+import org.practica.controller.SalesController;
 import org.practica.controller.UserController;
 
 public class Main {
@@ -23,6 +24,7 @@ public class Main {
 
         new ProductController(app).applyRoutes();
         new UserController(app).applyRoutes();
+        new SalesController(app).applyRoutes();
 
 
     }

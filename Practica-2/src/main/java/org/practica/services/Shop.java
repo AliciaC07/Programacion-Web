@@ -121,6 +121,10 @@ public class Shop {
         return products;
     }
 
+    public ArrayList<Receipt> getAllReceipts(){
+        return receipts;
+    }
+
     public Product FindProductById(Integer id){
 
         for (Product aux: products) {
@@ -149,6 +153,21 @@ public class Shop {
             product.setId(products.size()+1);
             products.add(product);
             return product;
+        }
+    }
+
+    public Client createClient(Client client){
+        clients.add(client);
+        return client;
+    }
+
+    public  void  createReceipt(Receipt receipt){
+        if (receipts == null){
+            receipt.setId(1);
+            receipts.add(receipt);
+        }else {
+            receipt.setId(receipts.size()+1);
+            receipts.add(receipt);
         }
     }
 

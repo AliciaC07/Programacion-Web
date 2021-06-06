@@ -1,10 +1,10 @@
 package org.practica.controller;
 
 import io.javalin.Javalin;
-import org.practica.models.Product;
-import org.practica.models.ShoppingCart;
+import org.practica.models.*;
 import org.practica.services.Shop;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +26,7 @@ public class ProductController {
                 get("/", ctx -> {
                     Map<String, Object> model = new HashMap<>();
                     model.put("title", "Home");
+                    model.put("class", "nav-link active");
                     model.put("products", shop.getAllProducts());
                     if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
                         model.put("isLogged", true);
@@ -201,18 +202,72 @@ public class ProductController {
                         for (Product aux: products) {
                             System.out.println(aux.getName() + aux.getId() + aux.getPrice() + aux.getAmount());
                         }
+                        if (products.size() == 0){
+                            model.put("emptyList", true);
+                        }
                         model.put("cartProducts", products);
                         model.put("total", shoppingCart.getTotal());
                     }else {
                         ArrayList<Product> products = new ArrayList<>();
                         model.put("cartProducts", products);
-                        model.put("empty", true);
+                        model.put("emptyList", true);
                         model.put("total", "00");
                     }
 
                     ctx.render("/public/shoppingCart.html", model);
 
                 });
+
+                post("/shopping-cart/buy", ctx -> {
+                    String name = ctx.formParam("nameClient");
+                    String lastName = ctx.formParam("lastNameClient");
+                    String email =  ctx.formParam("emailClient");
+                    Client client = shop.FindClientByEmail(email);
+                    ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
+                    Receipt receipt = new Receipt();
+                    if (client == null){
+                        Client newClient = new Client();
+                        newClient.setLastName(lastName);
+                        newClient.setName(name);
+                        newClient.setEmail(email);
+                        receipt.setClient(newClient);
+                        receipt.setShoppingCart(shoppingCart);
+                        User user = shop.FindCUserByUsername("aliciac07");
+                        receipt.setSalesman(user);
+                        receipt.setDate(LocalDate.now());
+                        receipt.setTotal(shoppingCart.getTotal());
+                        shop.createReceipt(receipt);
+                        ArrayList<Product> products = new ArrayList<>();
+                        ShoppingCart shoppingCartNew = new ShoppingCart();
+                        shoppingCartNew.setProducts(products);
+                        ctx.req.getSession().invalidate();
+                        shop.createShoppingCart(shoppingCart);
+
+                        ctx.redirect("/product");
+                        System.out.println(receipt.getShoppingCart().getTotal());
+
+                    }else{
+                        receipt.setClient(client);
+                        receipt.setShoppingCart(shoppingCart);
+                        User user = shop.FindCUserByUsername("aliciac07");
+                        receipt.setSalesman(user);
+                        receipt.setDate(LocalDate.now());
+                        receipt.setTotal(shoppingCart.getTotal());
+                        shop.createReceipt(receipt);
+                        ArrayList<Product> products = new ArrayList<>();
+                        ShoppingCart shoppingCartNew = new ShoppingCart();
+                        shoppingCartNew.setProducts(products);
+                        ctx.req.getSession().invalidate();
+                        shop.createShoppingCart(shoppingCart);
+                        System.out.println(receipt.getShoppingCart().getTotal());
+
+                        ctx.redirect("/product");
+
+                    }
+
+                });
+
+
             });
 
 
