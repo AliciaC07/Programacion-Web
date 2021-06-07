@@ -35,10 +35,6 @@
             </div>
         </div>
     </div>
-
-
-
-
 </div>
 <div class="row justify-content-md-center align-items-center" style="margin-top: -12; margin-top: 40px; margin-bottom: 40px;">
     <h2 th:text="${cartList}">Products List</h2>
@@ -86,7 +82,7 @@
 
 <div class="grid-container row justify-content-md-center align-items-center">
     <button  type="submit" class="btn btn-primary mr-2" th:disabled="${emptyList}" >Proceed to Pay</button>
-    <a th:href="'/product/buy/remove-all'" ><button type="button" class="btn btn-primary">Clean cart</button></a>
+    <a th:href="'/product/buy/remove-all'" ><button type="button" class="btn btn-primary" th:disabled="${emptyList}">Clean cart</button></a>
 </div>
 </form>
 

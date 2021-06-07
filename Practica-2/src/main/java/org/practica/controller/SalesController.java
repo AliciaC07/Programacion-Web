@@ -24,10 +24,11 @@ public class SalesController {
                     Map<String, Object> model = new HashMap<>();
                     model.put("title", "Sales");
                     model.put("class", "nav-link active");
-                    if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
+                    if ( ctx.sessionAttribute("user") != null){
                         model.put("isLogged", true);
                     }else {
                         model.put("isLogged", false);
+                        ctx.redirect("/user");
                     }
                     model.put("receipts", shop.getAllReceipts());
                     for (Receipt aux: shop.getAllReceipts()) {

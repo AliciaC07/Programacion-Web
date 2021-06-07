@@ -26,9 +26,14 @@ public class ProductController {
                 get("/", ctx -> {
                     Map<String, Object> model = new HashMap<>();
                     model.put("title", "Home");
-                    model.put("class", "nav-link active");
                     model.put("products", shop.getAllProducts());
-                    if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
+                    ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
+                    if (shoppingCart == null){
+                        model.put("cartCount", "Cart(0)");
+                    }else {
+                        model.put("cartCount", "Cart("+shoppingCart.getProducts().size()+")");
+                    }
+                    if (ctx.sessionAttribute("user") != null){
                         model.put("isLogged", true);
                     }else {
                         model.put("isLogged", false);
@@ -39,16 +44,17 @@ public class ProductController {
 
                 get("/create", ctx -> {
                     Map<String, Object> model = new HashMap<>();
-                    Product product = new Product();
                     model.put("title", "Create Product");
                     model.put("action_form", "/product/create");
                     model.put("action", "Create Product");
                     model.put("buying", false);
-                    if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
+                    if (ctx.sessionAttribute("user") != null){
                         model.put("isLogged", true);
                     }else {
                         model.put("isLogged", false);
+                        ctx.redirect("/user");
                     }
+
                     ctx.render("/public/product.html", model);
                 });
                 get("/edit/:id", ctx -> {
@@ -63,10 +69,11 @@ public class ProductController {
                     model.put("action", "Edit Product");
                     model.put("action_form", "/product/edit/"+product.getId());
                     model.put("buying", false);
-                    if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
+                    if ( ctx.sessionAttribute("user") != null){
                         model.put("isLogged", true);
                     }else {
                         model.put("isLogged", false);
+                        ctx.redirect("/user");
                     }
 
                     ctx.render("/public/product.html",model);
@@ -76,6 +83,9 @@ public class ProductController {
                 ///edit post
                 post("/edit/:id", ctx -> {
                     String name = ctx.formParam("name");
+                    if ( ctx.sessionAttribute("user") == null){
+                        ctx.redirect("/user");
+                    }
                     Integer amount = Integer.parseInt(Objects.requireNonNull(ctx.formParam("amount")));
                     Float price = Float.parseFloat(Objects.requireNonNull(ctx.formParam("price")));
                     Product productEdited = shop.updateProduct(name, amount, price, ctx.pathParam("id", Integer.class).get());
@@ -86,6 +96,9 @@ public class ProductController {
                 });
 
                 post("/create", ctx -> {
+                    if ( ctx.sessionAttribute("user") == null){
+                        ctx.redirect("/product");
+                    }
                     String name = ctx.formParam("name");
                     float price = Float.parseFloat(Objects.requireNonNull(ctx.formParam("price")));
                     int amount = Integer.parseInt(Objects.requireNonNull(ctx.formParam("amount")));
@@ -100,7 +113,12 @@ public class ProductController {
                 });
 
                 get("/delete/:id", ctx -> {
+                    if ( ctx.sessionAttribute("user") == null){
+                        ctx.redirect("/product");
+                        return;
+                    }
                     shop.deleteProduct(ctx.pathParam("id", Integer.class).get());
+
                     ctx.redirect("/product");
                 });
 
@@ -131,14 +149,19 @@ public class ProductController {
                     model.put("buying", true);
                     model.put("action_form", "/product/buy/"+product.getId());
                     model.put("product", product);
-                    if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
+                    ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
+                    if (shoppingCart == null){
+                        model.put("cartCount", "Cart(0)");
+                    }else {
+                        model.put("cartCount", "Cart("+shoppingCart.getProducts().size()+")");
+                    }
+                    if (ctx.sessionAttribute("user") != null){
                         model.put("isLogged", true);
+                        ctx.redirect("/product");
                     }else {
                         model.put("isLogged", false);
                     }
                     ctx.render("/public/product.html", model);
-
-
                 });
 
                 post("/buy/:id", ctx -> {
@@ -153,15 +176,16 @@ public class ProductController {
                     productselected.setAmount(amountSelected);
                     product.setAmount(product.getAmount()- amountSelected);
                     shop.updateProduct(product.getName(),product.getAmount(), product.getPrice(),product.getId());
+
                     if (ctx.sessionAttribute("cart") == null){
                        shop.createShoppingCart(shoppingCart);
                        productsCart.add(productselected);
                        shoppingCart.setProducts(productsCart);
                         ctx.sessionAttribute("cart", shoppingCart);
 
-                        for (Product aux: shoppingCart.getProducts()) {
-                            System.out.println(aux.getName());
-                        }
+//                        for (Product aux: shoppingCart.getProducts()) {
+//                            System.out.println(aux.getName());
+//                        }
 
                     }else {
                         ShoppingCart shoppingCartFound = ctx.sessionAttribute("cart");
@@ -191,20 +215,24 @@ public class ProductController {
                     Map<String, Object> model = new HashMap<>();
                     model.put("title", "ShoppingCart");
                     model.put("cartList", "Car List");
-                    if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
+
+
+                    if ( ctx.sessionAttribute("user") != null){
                         model.put("isLogged", true);
+                        ctx.redirect("/product");
                     }else {
                         model.put("isLogged", false);
                     }
                     if (ctx.sessionAttribute("cart") != null){
                         ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
                         ArrayList<Product> products = shoppingCart.getProducts();
-                        for (Product aux: products) {
-                            System.out.println(aux.getName() + aux.getId() + aux.getPrice() + aux.getAmount());
-                        }
+
                         if (products.size() == 0){
                             model.put("emptyList", true);
                         }
+
+                        model.put("cartCount", "Cart("+shoppingCart.getProducts().size()+")");
+
                         model.put("cartProducts", products);
                         model.put("total", shoppingCart.getTotal());
                     }else {
@@ -212,6 +240,7 @@ public class ProductController {
                         model.put("cartProducts", products);
                         model.put("emptyList", true);
                         model.put("total", "00");
+                        model.put("cartCount", "Cart(0)");
                     }
 
                     ctx.render("/public/shoppingCart.html", model);
@@ -225,6 +254,9 @@ public class ProductController {
                     Client client = shop.FindClientByEmail(email);
                     ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
                     Receipt receipt = new Receipt();
+                    if ( ctx.sessionAttribute("user") != null){
+                        ctx.redirect("/product");
+                    }
                     if (client == null){
                         Client newClient = new Client();
                         newClient.setLastName(lastName);
@@ -237,12 +269,8 @@ public class ProductController {
                         receipt.setDate(LocalDate.now());
                         receipt.setTotal(shoppingCart.getTotal());
                         shop.createReceipt(receipt);
-                        ArrayList<Product> products = new ArrayList<>();
-                        ShoppingCart shoppingCartNew = new ShoppingCart();
-                        shoppingCartNew.setProducts(products);
-                        ctx.req.getSession().invalidate();
-                        shop.createShoppingCart(shoppingCart);
-
+                        //ctx.req.getSession().invalidate();
+                        ctx.sessionAttribute("cart", null);
                         ctx.redirect("/product");
                         System.out.println(receipt.getShoppingCart().getTotal());
 
@@ -254,13 +282,9 @@ public class ProductController {
                         receipt.setDate(LocalDate.now());
                         receipt.setTotal(shoppingCart.getTotal());
                         shop.createReceipt(receipt);
-                        ArrayList<Product> products = new ArrayList<>();
-                        ShoppingCart shoppingCartNew = new ShoppingCart();
-                        shoppingCartNew.setProducts(products);
-                        ctx.req.getSession().invalidate();
-                        shop.createShoppingCart(shoppingCart);
+                        //ctx.req.getSession().invalidate();
+                        ctx.sessionAttribute("cart", null);
                         System.out.println(receipt.getShoppingCart().getTotal());
-
                         ctx.redirect("/product");
 
                     }

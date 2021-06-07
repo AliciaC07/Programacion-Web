@@ -29,10 +29,8 @@ public class UserController {
                 get("/logout", ctx -> {
 //                    String id = ctx.req.getSession().getId();
 //                    System.out.println(id);
-                    ctx.req.getSession().invalidate();
-                    if (ctx.cookie("userName") != null){
-                        ctx.removeCookie("userName","/");
-                    }
+                    //ctx.req.getSession().invalidate();
+                    ctx.sessionAttribute("user", null);
 
                     ctx.redirect("/product");
                 });
@@ -47,17 +45,13 @@ public class UserController {
                     }
                     User userLog = shop.authUser(userName, password);
                     if (userLog != null){
-                        if (ctx.formParam("signed").equals("on")){
-                            ctx.cookie("userName", userLog.getUserName(), 400000);
-                        }
+
                         ctx.sessionAttribute("user", userLog);
                     }else{
                         //crear user
-                        System.out.println(ctx.formParam("signed"));
+
                         User newUser = shop.createUser(userName, password);
-                        if (ctx.formParam("signed").equals("on")){
-                            ctx.cookie("userName", newUser.getUserName(), 400000);
-                        }
+
                         ctx.sessionAttribute("user", newUser);
 
 

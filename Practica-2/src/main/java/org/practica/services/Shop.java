@@ -29,6 +29,18 @@ public class Shop {
         }
         return shop;
     }
+    public Product createProduct(String name, Float price, Integer amount){
+        Product product = new Product(1, name, price, amount);
+        if (products == null){
+            products.add(product);
+            return product;
+        }else {
+            product.setId(products.size()+1);
+            products.add(product);
+            return product;
+        }
+    }
+
     public Product updateProduct(String name, Integer amount, Float price, Integer id){
         Product productFound = FindProductById(id);
         if (productFound != null){
@@ -144,17 +156,7 @@ public class Shop {
         return null;
     }
 
-    public Product createProduct(String name, Float price, Integer amount){
-        Product product = new Product(1, name, price, amount);
-        if (products == null){
-            products.add(product);
-            return product;
-        }else {
-            product.setId(products.size()+1);
-            products.add(product);
-            return product;
-        }
-    }
+
 
     public Client createClient(Client client){
         clients.add(client);

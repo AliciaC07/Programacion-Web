@@ -54,7 +54,7 @@
             </div>
             <div class="form-group">
               <label class="col-form-label mt-3 is-invalid" th:text="${buying} ? 'Available' : 'Amount'"  for="inAmount">Amount</label>
-              <input type="text" class="form-control" th:readonly="${buying} "name="amount" th:value="${product} ? ${product.amount} : ''" placeholder="Product stock" id="inAmount" required>
+              <input type="text" class="form-control" th:readonly="${buying} " name="amount" th:value="${product} ? ${product.amount} : ''" placeholder="Product stock" id="inAmount" required>
             </div>
 
             <div class="form-group" th:hidden="${isLogged}">

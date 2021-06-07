@@ -22,10 +22,10 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" th:hidden="${isLogged}" href="/product/shopping-cart">Cart</a>
+              <a class="nav-link" th:hidden="${isLogged}" th:text="${cartCount}" href="/product/shopping-cart">Cart</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/sales">Sales</a>
+              <a class="nav-link" th:hidden="!${isLogged}" href="/sales">Sales</a>
             </li>
             <li class="nav-item">
               <a th:hidden="${isLogged}" class="nav-link" href="/user">Login</a>
