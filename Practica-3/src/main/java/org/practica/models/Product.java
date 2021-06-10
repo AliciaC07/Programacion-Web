@@ -11,6 +11,7 @@ public class Product {
     String name;
     Float price;
     Integer amount;
+    Boolean active;
 
     public Product(Integer id, String name, Float price, Integer amount) {
         this.id = id;

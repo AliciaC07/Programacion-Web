@@ -1,5 +1,6 @@
 package org.practica.services;
 
+import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.practica.models.*;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ public class Shop {
     private ArrayList<User> users = new ArrayList<>();
     private ArrayList<Receipt> receipts = new ArrayList<>();
     private ArrayList<ShoppingCart> shoppingCarts = new ArrayList<>();
+    StrongPasswordEncryptor spe = new StrongPasswordEncryptor();
 
     private Shop() {
         products.add(new Product(1, "Milk", 10.00f, 3));
@@ -94,6 +96,9 @@ public class Shop {
             return user;
         }
         return null;
+    }
+    public ArrayList<User> getallUser(){
+        return users;
     }
     public User createUser(String userName, String password){
         User newUser = new User();

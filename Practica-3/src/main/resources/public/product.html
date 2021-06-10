@@ -62,7 +62,7 @@
               <input type="text" class="form-control" th:disabled="${product} ? (${product.amount} > 0 ? false : true) : false" name="quantity" th:value="'1'"  placeholder="Product quantity" id="inQuantity" required>
             </div>
             <input id="buy" th:value="${buying} ? true : false" th:hidden="true">
-
+            <input id="active" name="active" th:hidden="true" th:value="${product} ? ${product.active} : ''">
 
           </fieldset>
 

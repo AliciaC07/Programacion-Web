@@ -4,14 +4,13 @@ import io.javalin.Javalin;
 import io.javalin.core.util.RouteOverviewPlugin;
 import io.javalin.plugin.rendering.JavalinRenderer;
 import io.javalin.plugin.rendering.template.JavalinThymeleaf;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.practica.controller.ProductController;
 import org.practica.controller.SalesController;
 import org.practica.controller.UserController;
 import org.practica.models.Product;
-import org.practica.services.BootStrapService;
-import org.practica.services.DataBaseService;
-import org.practica.services.ProductService;
-import org.practica.services.Shop;
+import org.practica.models.User;
+import org.practica.services.*;
 
 import java.sql.SQLException;
 
@@ -27,14 +26,19 @@ public class Main {
         DataBaseService.getInstance().testConexion();
         BootStrapService.createTables();
         ProductService productService = new ProductService();
+        UserService userService = new UserService();
+
         for (Product pr: Shop.getInstance().getAllProducts()) {
             if (productService.findProductById(pr.getId()) == null){
                 productService.createProduct(pr);
             }
         }
-        for (Product p: productService.findAllProducts()) {
-            System.out.println(p.getName());
+        for (User user: Shop.getInstance().getallUser()) {
+            if (userService.findUserbyUsername(user.getUserName()) == null){
+                userService.createUser(user);
+            }
         }
+
 
 
         app.get("/",ctx -> {

@@ -60,6 +60,7 @@ public class BootStrapService {
                 "\tNAME VARCHAR(200) not null,\n" +
                 "\tPRICE FLOAT not null,\n" +
                 "\tAMOUNT INT not null,\n" +
+                "\tACTIVE BOOLEAN default true not null,\n" +
                 "\tconstraint PRODUCT_PK\n" +
                 "\t\tprimary key (ID)\n" +
                 ");\n" +

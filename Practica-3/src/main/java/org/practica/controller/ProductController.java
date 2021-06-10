@@ -2,6 +2,7 @@ package org.practica.controller;
 
 import io.javalin.Javalin;
 import org.practica.models.*;
+import org.practica.services.ProductService;
 import org.practica.services.Shop;
 
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 public class ProductController {
     private final Javalin app;
     private Shop shop = Shop.getInstance();
+    private ProductService productService = new ProductService();
 
     public ProductController(Javalin app ){
         this.app = app;
@@ -26,7 +28,7 @@ public class ProductController {
                 get("/", ctx -> {
                     Map<String, Object> model = new HashMap<>();
                     model.put("title", "Home");
-                    model.put("products", shop.getAllProducts());
+                    model.put("products", productService.findAllProducts());
                     ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
                     if (shoppingCart == null){
                         model.put("cartCount", "Cart(0)");
@@ -58,7 +60,7 @@ public class ProductController {
                     ctx.render("/public/product.html", model);
                 });
                 get("/edit/:id", ctx -> {
-                    Product product = shop.FindProductById(ctx.pathParam("id", Integer.class).get());
+                    Product product = productService.findProductByIdAndActive(ctx.pathParam("id", Integer.class).get());
 
                     Map<String, Object> model = new HashMap<>();
                     if (product == null){
@@ -80,7 +82,7 @@ public class ProductController {
 
 
                 });
-                ///edit post
+                ///edit post done
                 post("/edit/:id", ctx -> {
                     String name = ctx.formParam("name");
                     if ( ctx.sessionAttribute("user") == null){
@@ -88,13 +90,15 @@ public class ProductController {
                     }
                     Integer amount = Integer.parseInt(Objects.requireNonNull(ctx.formParam("amount")));
                     Float price = Float.parseFloat(Objects.requireNonNull(ctx.formParam("price")));
-                    Product productEdited = shop.updateProduct(name, amount, price, ctx.pathParam("id", Integer.class).get());
-                    System.out.println(shop.FindProductById(ctx.pathParam("id", Integer.class).get()).getAmount());
+                    Boolean active = ctx.formParam("active", Boolean.class).get();
+                    Product product = new Product(ctx.pathParam("id", Integer.class).get(),name,price,amount);
+                    product.setActive(active);
+                    productService.updateProduct(product);
                     ctx.redirect("/product");
 
 
                 });
-
+//done
                 post("/create", ctx -> {
                     if ( ctx.sessionAttribute("user") == null){
                         ctx.redirect("/product");
@@ -106,18 +110,21 @@ public class ProductController {
                         ctx.redirect("/public/product.html");
                         return;
                     }
-                    Product product = shop.createProduct(name, price, amount);
+                    Product product = new Product(null,name,price,amount);
+                    //Product product = shop.createProduct(name, price, amount);
+                    productService.createProduct(product);
                     System.out.println(product);
                     ctx.redirect("/product");
 
                 });
-
+//done
                 get("/delete/:id", ctx -> {
                     if ( ctx.sessionAttribute("user") == null){
                         ctx.redirect("/product");
                         return;
                     }
-                    shop.deleteProduct(ctx.pathParam("id", Integer.class).get());
+                    //shop.deleteProduct(ctx.pathParam("id", Integer.class).get());
+                    productService.deleteProduct(ctx.pathParam("id", Integer.class).get());
 
                     ctx.redirect("/product");
                 });
@@ -140,9 +147,9 @@ public class ProductController {
                     ctx.redirect("/product/shopping-cart");
 
                 });
-
+///working on
                 get("/buy/:id",ctx -> {
-                    Product product = shop.FindProductById(ctx.pathParam("id", Integer.class).get());
+                    Product product = productService.findProductById(ctx.pathParam("id", Integer.class).get());
                     Map<String, Object> model = new HashMap<>();
                     model.put("title", "Buy Product");
                     model.put("action", "Buy Product");
@@ -163,7 +170,7 @@ public class ProductController {
                     }
                     ctx.render("/public/product.html", model);
                 });
-
+///working on
                 post("/buy/:id", ctx -> {
                     ArrayList<Product> productsCart = new ArrayList<>();
                     ShoppingCart shoppingCart = new ShoppingCart();

@@ -35,11 +35,11 @@ public class ProductService {
 
     }
 
-    public Product findProductById(Integer id){
+    public Product findProductByIdAndActive(Integer id){
         Connection connection = DataBaseService.getInstance().getConnection();
         Product product = null;
         try{
-            String sql_find = "SELECT * FROM PRODUCT WHERE ID = ?;";
+            String sql_find = "SELECT * FROM PRODUCT WHERE ID = ? AND ACTIVE = true;";
             PreparedStatement ps = connection.prepareStatement(sql_find);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
@@ -49,6 +49,7 @@ public class ProductService {
                 product.setName(rs.getString("NAME"));
                 product.setPrice(rs.getFloat("PRICE"));
                 product.setAmount(rs.getInt("AMOUNT"));
+                product.setActive(rs.getBoolean("ACTIVE"));
             }
         }catch (SQLException e){
             System.out.println("Couldn't access the database");
@@ -68,7 +69,7 @@ public class ProductService {
         Connection connection = DataBaseService.getInstance().getConnection();
 
         try {
-            String sql_all = "SELECT * FROM PRODUCT";
+            String sql_all = "SELECT * FROM PRODUCT WHERE ACTIVE = true";
             PreparedStatement ps = connection.prepareStatement(sql_all);
             ResultSet rs = ps.executeQuery();
 
@@ -79,6 +80,7 @@ public class ProductService {
                         rs.getFloat("PRICE"),
                         rs.getInt("AMOUNT")
                 );
+                product.setActive(rs.getBoolean("ACTIVE"));
                 products.add(product);
             }
             ps.close();
@@ -96,16 +98,22 @@ public class ProductService {
 
     }
     public Boolean updateProduct(Product product){
-        Product productFound = findProductById(product.getId());
+        Product productFound = findProductByIdAndActive(product.getId());
+        productFound.setAmount(product.getAmount());
+        productFound.setPrice(product.getPrice());
+        productFound.setName(product.getName());
+        productFound.setActive(product.getActive());
         Connection connection = DataBaseService.getInstance().getConnection();
-        Boolean status = false;
+        boolean status = false;
         if (productFound != null){
-            String sql_update = "UPDATE PRODUCT SET NAME=?, PRICE=?, AMOUNT=?";
+            String sql_update = "UPDATE PRODUCT SET NAME=?, PRICE=?, AMOUNT=?, ACTIVE = ? WHERE EASY_SHOP.PUBLIC.PRODUCT.ID = ?";
             try{
                 PreparedStatement ps = connection.prepareStatement(sql_update);
-                ps.setString(1, product.getName());
-                ps.setFloat(2, product.getPrice());
-                ps.setInt(3, product.getAmount());
+                ps.setString(1, productFound.getName());
+                ps.setFloat(2, productFound.getPrice());
+                ps.setInt(3, productFound.getAmount());
+                ps.setBoolean(4, productFound.getActive());
+                ps.setInt(5, productFound.getId());
                 int row = ps.executeUpdate();
                 status = row > 0;
                 ps.close();
@@ -123,6 +131,44 @@ public class ProductService {
         return status;
 
     }
+
+    public Product findProductById(Integer id){
+        Connection connection = DataBaseService.getInstance().getConnection();
+        Product product = null;
+        try{
+            String sql_find = "SELECT * FROM PRODUCT WHERE ID = ?";
+            PreparedStatement ps = connection.prepareStatement(sql_find);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                product = new Product();
+                product.setId(rs.getInt("ID"));
+                product.setName(rs.getString("NAME"));
+                product.setPrice(rs.getFloat("PRICE"));
+                product.setAmount(rs.getInt("AMOUNT"));
+                product.setActive(rs.getBoolean("ACTIVE"));
+            }
+        }catch (SQLException e){
+            System.out.println("Couldn't access the database");
+
+        }finally {
+            try{
+                connection.close();
+            }catch (SQLException e){
+                System.out.println("Occurred an error closing the connection");
+            }
+        }
+        return product;
+    }
+
+    public void deleteProduct(Integer id){
+        Product product = findProductByIdAndActive(id);
+        if (product != null){
+            product.setActive(false);
+            updateProduct(product);
+        }
+    }
+
 
 
 }

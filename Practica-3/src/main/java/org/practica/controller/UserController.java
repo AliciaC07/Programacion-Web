@@ -3,6 +3,7 @@ package org.practica.controller;
 import io.javalin.Javalin;
 import org.practica.models.User;
 import org.practica.services.Shop;
+import org.practica.services.UserService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +13,7 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 public class UserController {
     private final Javalin app;
     private Shop shop = Shop.getInstance();
+    private UserService userService = new UserService();
 
     public UserController(Javalin app) {
         this.app = app;
@@ -27,9 +29,10 @@ public class UserController {
                 });
 
                 get("/logout", ctx -> {
-//                    String id = ctx.req.getSession().getId();
-//                    System.out.println(id);
-                    //ctx.req.getSession().invalidate();
+
+                    if (ctx.cookie("userName") != null){
+                        ctx.removeCookie("userName","/");
+                    }
                     ctx.sessionAttribute("user", null);
 
                     ctx.redirect("/product");
@@ -43,15 +46,24 @@ public class UserController {
                         ctx.redirect("/public/login.html");
                         return;
                     }
-                    User userLog = shop.authUser(userName, password);
+                    User userLog = userService.authUser(userName,password);
                     if (userLog != null){
+
+                        if (ctx.formParam("signed").equals("on")){
+                            ctx.cookie("userName", userLog.getUserName(), 400000);
+                        }
 
                         ctx.sessionAttribute("user", userLog);
                     }else{
                         //crear user
 
-                        User newUser = shop.createUser(userName, password);
-
+                        User newUser = new User();
+                        newUser.setUserName(userName);
+                        newUser.setPassword(password);
+                        userService.createUser(newUser);
+                        if (ctx.formParam("signed").equals("on")){
+                            ctx.cookie("userName", newUser.getUserName(), 400000);
+                        }
                         ctx.sessionAttribute("user", newUser);
 
 
