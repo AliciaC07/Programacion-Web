@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'org.practica'
+version '1.0-SNAPSHOT'
+
+mainClassName = 'org.practica.Main'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    implementation 'io.javalin:javalin:3.13.7'
+    implementation 'org.slf4j:slf4j-simple:1.7.30'
+
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+    compile "org.thymeleaf:thymeleaf:3.0.11.RELEASE"
+
+    // https://mvnrepository.com/artifact/org.hotswapagent/hotswap-agent-core
+    implementation group: 'org.hotswapagent', name: 'hotswap-agent-core', version: '1.4.1'
+
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+
+    compile 'com.h2database:h2:1.4.200'
+
+
+}
+
+test {
+    useJUnitPlatform()
+}

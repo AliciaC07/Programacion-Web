@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.css" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        function caution() {
+            var amount = document.getElementById("amount").value;
+            var  stock = document.getElementsByTagName("table");
+            console.log(stock);
+            if (amount > stock){
+                alert("The amount inserted is incorrect");
+            }else {
+                alert(amount);
+            }
+        }
+    </script>
+
+
+    <title th:text="${title}">Prueba</title>
+</head>
+<body>
+    <header th:replace="base.html :: header"></header>
+    <div class="row justify-content-md-center align-items-center" style="margin-top: -12; margin-top: 50px; margin-bottom: 40px;">
+        <h2>Products List</h2>
+    </div>
+    <div class="row justify-content-md-center align-items-center" style="margin-top: -12; margin-top: 20px; align-content: flex-end margin-bottom: 20px;">
+        <div class="col-6 col-md-4"></div>
+        <a href="/product/create/" th:hidden="!${isLogged}"><button type="button" class="btn btn-success">New Product</button></a>
+    </div>
+    <div class="grid-container row justify-content-md-center align-items-center">
+        <div class="col"></div>
+
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th class="text-center" scope="col">Product</th>
+                            <th class="text-center" scope="col">Price</th>
+                            <th class="text-center" scope="col">Stock</th>
+                            <th class="text-center" scope="col">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="product : ${products}">
+                            <td class="text-center" th:text="${product.name}">Name</td>
+                            <td class="text-center" th:text="${product.price}">Price</td>
+                            <td class="text-center" id="stock" th:text="${product.amount}">Amount</td>
+                            <td class="text-center">
+                                <a th:href="'/product/edit/'+${product.id}" th:hidden="!${isLogged}"><button type="button" class="btn btn-warning">Edit</button></a>
+                                <a th:href="'/product/delete/'+${product.id}" th:hidden="!${isLogged}" ><button type="button" class="btn btn-danger">Delete</button></a>
+                                <a th:href="'/product/buy/'+${product.id}" th:hidden="${isLogged}" ><button type="button" class="btn btn-success">Buy</button></a>
+
+
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+        <div class="col"></div>
+    </div>
+    <div th:replace="base.html::javascript">
+
+    </div>
+
+</body>
+</html>
