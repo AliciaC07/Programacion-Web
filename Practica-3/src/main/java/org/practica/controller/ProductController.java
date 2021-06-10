@@ -4,6 +4,7 @@ import io.javalin.Javalin;
 import org.practica.models.*;
 import org.practica.services.ProductService;
 import org.practica.services.Shop;
+import org.practica.services.ShoppingCartService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class ProductController {
     private final Javalin app;
     private Shop shop = Shop.getInstance();
     private ProductService productService = new ProductService();
-
+    private ShoppingCartService shoppingCartService = new ShoppingCartService();
     public ProductController(Javalin app ){
         this.app = app;
     }
@@ -170,48 +171,51 @@ public class ProductController {
                     }
                     ctx.render("/public/product.html", model);
                 });
-///working on
+///dique done
                 post("/buy/:id", ctx -> {
                     ArrayList<Product> productsCart = new ArrayList<>();
                     ShoppingCart shoppingCart = new ShoppingCart();
-                    Product product = shop.FindProductById(ctx.pathParam("id", Integer.class).get());
+                    shoppingCart.setName("Cart");
+                    Product product = productService.findProductByIdAndActive(ctx.pathParam("id", Integer.class).get());
                     Product productselected = new Product();
                     productselected.setId(product.getId());
                     productselected.setName(product.getName());
                     productselected.setPrice(product.getPrice());
+                    productselected.setActive(product.getActive());
                     Integer amountSelected = ctx.formParam("quantity", Integer.class).get();
                     productselected.setAmount(amountSelected);
                     product.setAmount(product.getAmount()- amountSelected);
-                    shop.updateProduct(product.getName(),product.getAmount(), product.getPrice(),product.getId());
+                    //shop.updateProduct(product.getName(),product.getAmount(), product.getPrice(),product.getId());
+                    productService.updateProduct(product);
 
                     if (ctx.sessionAttribute("cart") == null){
-                       shop.createShoppingCart(shoppingCart);
+                       //shop.createShoppingCart(shoppingCart);
+                       ShoppingCart shoppingCartCreated = shoppingCartService.createShoppingCart(shoppingCart);
                        productsCart.add(productselected);
-                       shoppingCart.setProducts(productsCart);
-                        ctx.sessionAttribute("cart", shoppingCart);
-
-//                        for (Product aux: shoppingCart.getProducts()) {
-//                            System.out.println(aux.getName());
-//                        }
+                       shoppingCartCreated.setProducts(productsCart);
+                       shoppingCartService.updateShoppingCart(shoppingCartCreated, productselected);
+                       ctx.sessionAttribute("cart", shoppingCartCreated);
+//
 
                     }else {
                         ShoppingCart shoppingCartFound = ctx.sessionAttribute("cart");
-                        shoppingCart = shop.findShoppingCartById(shoppingCartFound.getId());
+                        shoppingCart = shoppingCartService.findShoppingCartById(shoppingCartFound.getId());
 
                         for (Product aux :  shoppingCart.getProducts()) {
                             if (aux.getId().equals(productselected.getId())){
+                                shoppingCartService.updateProductShoppingCart(shoppingCart,aux.getAmount() + productselected.getAmount());
                                 aux.setAmount(aux.getAmount() + productselected.getAmount());
+
                                 ctx.sessionAttribute("cart", shoppingCart);
                                 ctx.redirect("/product");
                                 return;
                             }
                         }
                         shoppingCart.getProducts().add(productselected);
+                        shoppingCartService.updateShoppingCart(shoppingCart, productselected);
                         ctx.sessionAttribute("cart", shoppingCart);
 
-//                        for (Product aux: shoppingCart.getProducts()) {
-//                            System.out.println(aux.getName());
-//                        }
+
 
                     }
                     ctx.redirect("/product");

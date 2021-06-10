@@ -10,6 +10,7 @@ public class ShoppingCart {
 
     Integer id;
     ArrayList<Product> products;
+    String name;
 
 
     public ShoppingCart() {

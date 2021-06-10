@@ -73,6 +73,7 @@ public class BootStrapService {
         String sql_shopping_cart ="create table IF NOT EXISTS SHOPPING_CART\n" +
                 "(\n" +
                 "\tID INT auto_increment,\n" +
+                "\tNAME VARCHAR(100) not null,\n" +
                 "\tconstraint SHOPPING_CART_PK\n" +
                 "\t\tprimary key (ID)\n" +
                 ");\n" +
@@ -83,8 +84,7 @@ public class BootStrapService {
                 "(\n" +
                 "\tID_SHOPPING_CART INT not null,\n" +
                 "\tID_PRODUCT INT not null,\n" +
-                "\tconstraint SHOPPING_CART_PRODUCT_PK\n" +
-                "\t\tprimary key (ID_SHOPPING_CART),\n" +
+                "\tAMOUNT INT not null,\n" +
                 "\tconstraint SHOPPING_CART_PRODUCT_PRODUCT_ID_FK\n" +
                 "\t\tforeign key (ID_PRODUCT) references PRODUCT (ID),\n" +
                 "\tconstraint SHOPPING_CART_PRODUCT_SHOPPING_CART_ID_FK\n" +
