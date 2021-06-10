@@ -2,9 +2,7 @@ package org.practica.controller;
 
 import io.javalin.Javalin;
 import org.practica.models.*;
-import org.practica.services.ProductService;
-import org.practica.services.Shop;
-import org.practica.services.ShoppingCartService;
+import org.practica.services.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,7 +16,9 @@ public class ProductController {
     private final Javalin app;
     private Shop shop = Shop.getInstance();
     private ProductService productService = new ProductService();
-    private ShoppingCartService shoppingCartService = new ShoppingCartService();
+    private ClientService clientService = new ClientService();
+    private UserService userService = new UserService();
+    private ReceiptService receiptService = new ReceiptService();
     public ProductController(Javalin app ){
         this.app = app;
     }
@@ -189,30 +189,25 @@ public class ProductController {
                     productService.updateProduct(product);
 
                     if (ctx.sessionAttribute("cart") == null){
-                       //shop.createShoppingCart(shoppingCart);
-                       ShoppingCart shoppingCartCreated = shoppingCartService.createShoppingCart(shoppingCart);
-                       productsCart.add(productselected);
-                       shoppingCartCreated.setProducts(productsCart);
-                       shoppingCartService.updateShoppingCart(shoppingCartCreated, productselected);
-                       ctx.sessionAttribute("cart", shoppingCartCreated);
+                        shop.createShoppingCart(shoppingCart);
+                        productsCart.add(productselected);
+                        shoppingCart.setProducts(productsCart);
+                       ctx.sessionAttribute("cart", shoppingCart);
 //
 
                     }else {
                         ShoppingCart shoppingCartFound = ctx.sessionAttribute("cart");
-                        shoppingCart = shoppingCartService.findShoppingCartById(shoppingCartFound.getId());
+                        shoppingCart = shop.findShoppingCartById(shoppingCartFound.getId());
 
                         for (Product aux :  shoppingCart.getProducts()) {
                             if (aux.getId().equals(productselected.getId())){
-                                shoppingCartService.updateProductShoppingCart(shoppingCart,aux.getAmount() + productselected.getAmount());
                                 aux.setAmount(aux.getAmount() + productselected.getAmount());
-
                                 ctx.sessionAttribute("cart", shoppingCart);
                                 ctx.redirect("/product");
                                 return;
                             }
                         }
                         shoppingCart.getProducts().add(productselected);
-                        shoppingCartService.updateShoppingCart(shoppingCart, productselected);
                         ctx.sessionAttribute("cart", shoppingCart);
 
 
@@ -262,25 +257,30 @@ public class ProductController {
                     String name = ctx.formParam("nameClient");
                     String lastName = ctx.formParam("lastNameClient");
                     String email =  ctx.formParam("emailClient");
-                    Client client = shop.FindClientByEmail(email);
+                    Client client = clientService.findClientByEmail(email);
                     ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
                     Receipt receipt = new Receipt();
                     if ( ctx.sessionAttribute("user") != null){
                         ctx.redirect("/product");
                     }
-                    if (client == null){
+                    if (client.getEmail() == null){
                         Client newClient = new Client();
                         newClient.setLastName(lastName);
                         newClient.setName(name);
                         newClient.setEmail(email);
+                        clientService.createClient(newClient);
                         receipt.setClient(newClient);
                         receipt.setShoppingCart(shoppingCart);
-                        User user = shop.FindCUserByUsername("aliciac07");
+                        User user = userService.findUserbyUsername("aliciac07");
                         receipt.setSalesman(user);
                         receipt.setDate(LocalDate.now());
                         receipt.setTotal(shoppingCart.getTotal());
-                        shop.createReceipt(receipt);
-                        //ctx.req.getSession().invalidate();
+                        //shop.createReceipt(receipt);
+                        receiptService.createReceipt(receipt);
+                        for (Product pr: shoppingCart.getProducts()) {
+                            receiptService.insertProductReceipt(receipt, pr);
+                        }
+
                         ctx.sessionAttribute("cart", null);
                         ctx.redirect("/product");
                         System.out.println(receipt.getShoppingCart().getTotal());
@@ -288,12 +288,16 @@ public class ProductController {
                     }else{
                         receipt.setClient(client);
                         receipt.setShoppingCart(shoppingCart);
-                        User user = shop.FindCUserByUsername("aliciac07");
+                        User user = userService.findUserbyUsername("aliciac07");
                         receipt.setSalesman(user);
                         receipt.setDate(LocalDate.now());
                         receipt.setTotal(shoppingCart.getTotal());
-                        shop.createReceipt(receipt);
-                        //ctx.req.getSession().invalidate();
+                        //shop.createReceipt(receipt);
+                        receiptService.createReceipt(receipt);
+                        for (Product pr: shoppingCart.getProducts()) {
+                            receiptService.insertProductReceipt(receipt, pr);
+                        }
+
                         ctx.sessionAttribute("cart", null);
                         System.out.println(receipt.getShoppingCart().getTotal());
                         ctx.redirect("/product");

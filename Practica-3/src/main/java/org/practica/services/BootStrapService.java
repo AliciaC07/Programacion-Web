@@ -43,10 +43,14 @@ public class BootStrapService {
                 "\ton USER (USER_NAME);";
         String sql_client = "create table IF NOT EXISTS CLIENT\n" +
                 "(\n" +
-                "\tID INT auto_increment,\n" +
-                "\tNAME VARCHAR(100) not null,\n" +
-                "\tLASTNAME VARCHAR(100) not null\n" +
+                "\tID int auto_increment,\n" +
+                "\tEMAIL varchar(200) not null,\n" +
+                "\tNAME VARCHAR(100),\n" +
+                "\tLAST_NAME VARCHAR(100)\n" +
                 ");\n" +
+                "\n" +
+                "create unique index IF NOT EXISTS CLIENT_EMAIL_UINDEX\n" +
+                "\ton CLIENT (EMAIL);\n" +
                 "\n" +
                 "create unique index IF NOT EXISTS CLIENT_ID_UINDEX\n" +
                 "\ton CLIENT (ID);\n" +
@@ -70,54 +74,64 @@ public class BootStrapService {
                 "\n" +
                 "create unique index IF NOT EXISTS PRODUCT_ID_UINDEX_2\n" +
                 "\ton PRODUCT (ID);";
-        String sql_shopping_cart ="create table IF NOT EXISTS SHOPPING_CART\n" +
-                "(\n" +
-                "\tID INT auto_increment,\n" +
-                "\tNAME VARCHAR(100) not null,\n" +
-                "\tconstraint SHOPPING_CART_PK\n" +
-                "\t\tprimary key (ID)\n" +
-                ");\n" +
-                "\n" +
-                "create unique index IF NOT EXISTS SHOPPING_CART_ID_UINDEX\n" +
-                "\ton SHOPPING_CART (ID);\n";
-        String sql_shoppingcart_product ="create table IF NOT EXISTS SHOPPING_CART_PRODUCT\n" +
-                "(\n" +
-                "\tID_SHOPPING_CART INT not null,\n" +
-                "\tID_PRODUCT INT not null,\n" +
-                "\tAMOUNT INT not null,\n" +
-                "\tconstraint SHOPPING_CART_PRODUCT_PRODUCT_ID_FK\n" +
-                "\t\tforeign key (ID_PRODUCT) references PRODUCT (ID),\n" +
-                "\tconstraint SHOPPING_CART_PRODUCT_SHOPPING_CART_ID_FK\n" +
-                "\t\tforeign key (ID_SHOPPING_CART) references SHOPPING_CART (ID)\n" +
-                ");";
+//        String sql_shopping_cart ="create table IF NOT EXISTS SHOPPING_CART\n" +
+//                "(\n" +
+//                "\tID INT auto_increment,\n" +
+//                "\tNAME VARCHAR(100) not null,\n" +
+//                "\tconstraint SHOPPING_CART_PK\n" +
+//                "\t\tprimary key (ID)\n" +
+//                ");\n" +
+//                "\n" +
+//                "create unique index IF NOT EXISTS SHOPPING_CART_ID_UINDEX\n" +
+//                "\ton SHOPPING_CART (ID);\n";
+//        String sql_shoppingcart_product ="create table IF NOT EXISTS SHOPPING_CART_PRODUCT\n" +
+//                "(\n" +
+//                "\tID_SHOPPING_CART INT not null,\n" +
+//                "\tID_PRODUCT INT not null,\n" +
+//                "\tAMOUNT INT not null,\n" +
+//                "\tconstraint SHOPPING_CART_PRODUCT_PRODUCT_ID_FK\n" +
+//                "\t\tforeign key (ID_PRODUCT) references PRODUCT (ID),\n" +
+//                "\tconstraint SHOPPING_CART_PRODUCT_SHOPPING_CART_ID_FK\n" +
+//                "\t\tforeign key (ID_SHOPPING_CART) references SHOPPING_CART (ID)\n" +
+//                ");";
         String sql_receipt ="create table IF NOT EXISTS RECEIPT\n" +
                 "(\n" +
                 "\tID INT auto_increment,\n" +
                 "\tDATE DATE not null,\n" +
                 "\tEMAIL_CLIENT VARCHAR(150) not null,\n" +
                 "\tID_USER INT not null,\n" +
-                "\tID_SHOPPING_CART INT not null,\n" +
                 "\tTOTAL FLOAT not null,\n" +
                 "\tconstraint RECEIPT_PK\n" +
                 "\t\tprimary key (ID),\n" +
                 "\tconstraint RECEIPT_CLIENT_ID_FK\n" +
-                "\t\tforeign key (EMAIL_CLIENT) references CLIENT (ID),\n" +
-                "\tconstraint RECEIPT_SHOPPING_CART_ID_FK\n" +
-                "\t\tforeign key (ID_SHOPPING_CART) references SHOPPING_CART (ID),\n" +
+                "\t\tforeign key (EMAIL_CLIENT) references CLIENT (EMAIL),\n" +
                 "\tconstraint RECEIPT_USER_ID_FK\n" +
                 "\t\tforeign key (ID_USER) references USER (ID)\n" +
                 ");\n" +
                 "\n" +
                 "create unique index IF NOT EXISTS RECEIPT_ID_UINDEX\n" +
                 "\ton RECEIPT (ID);";
+        String sql_receipt_product = "create table IF NOT EXISTS RECEIPT_PRODUCT\n" +
+                "(\n" +
+                "ID_RECEIPT int not null,\n" +
+                "\tID_PRODUCT int not null,\n" +
+                "\tAMOUNT int not null,\n" +
+
+                "\tconstraint RECEIPT_PRODUCT_PRODUCT_ID_FK\n" +
+                "\t\tforeign key (ID_PRODUCT) references PRODUCT,\n" +
+                "\tconstraint RECEIPT_PRODUCT_RECEIPT_ID_FK\n" +
+                "\t\tforeign key (ID_RECEIPT) references RECEIPT" +
+
+                ");";
 
         Statement statement = connection.createStatement();
         statement.execute(sql_user);
         statement.execute(sql_client);
         statement.execute(sql_product);
-        statement.execute(sql_shopping_cart);
-        statement.execute(sql_shoppingcart_product);
+//        statement.execute(sql_shopping_cart);
+//        statement.execute(sql_shoppingcart_product);
         statement.execute(sql_receipt);
+        statement.execute(sql_receipt_product);
         statement.close();
         connection.close();
 
