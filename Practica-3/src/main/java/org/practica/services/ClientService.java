@@ -48,6 +48,7 @@ public class ClientService {
                 client.setEmail(rs.getString("EMAIL"));
                 client.setName(rs.getString("NAME"));
                 client.setLastName(rs.getString("LAST_NAME"));
+                client.setId(rs.getInt("ID"));
             }
 
 

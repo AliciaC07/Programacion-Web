@@ -77,4 +77,31 @@ public class UserService {
         }
 
     }
+    public User findUserbyId(Integer id){
+        Connection connection = DataBaseService.getInstance().getConnection();
+        User user = null;
+        try{
+            String sql_find = "SELECT * FROM USER WHERE ID = ?";
+            PreparedStatement ps = connection.prepareStatement(sql_find);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                user = new User();
+                user.setUserName(rs.getString("USER_NAME"));
+                user.setPassword(rs.getString("PASSWORD"));
+                user.setId(rs.getInt("ID"));
+
+            }
+        }catch (SQLException e){
+            System.out.println("Couldn't access the database");
+
+        }finally {
+            try{
+                connection.close();
+            }catch (SQLException e){
+                System.out.println("Occurred an error closing the connection");
+            }
+        }
+        return user;
+    }
 }

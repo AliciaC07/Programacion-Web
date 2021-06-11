@@ -49,8 +49,8 @@ public class UserController {
                     User userLog = userService.authUser(userName,password);
                     if (userLog != null){
 
-                        if (ctx.formParam("signed").equals("on")){
-                            ctx.cookie("userName", userLog.getUserName(), 400000);
+                        if (ctx.formParam("signed") != null){
+                            ctx.cookie("userName", userLog.getUserName(), 620000);
                         }
 
                         ctx.sessionAttribute("user", userLog);
@@ -61,8 +61,8 @@ public class UserController {
                         newUser.setUserName(userName);
                         newUser.setPassword(password);
                         userService.createUser(newUser);
-                        if (ctx.formParam("signed").equals("on")){
-                            ctx.cookie("userName", newUser.getUserName(), 400000);
+                        if (ctx.formParam("signed") != null){
+                            ctx.cookie("userName", newUser.getUserName(), 620000);
                         }
                         ctx.sessionAttribute("user", newUser);
 

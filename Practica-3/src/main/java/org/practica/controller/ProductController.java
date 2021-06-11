@@ -36,7 +36,7 @@ public class ProductController {
                     }else {
                         model.put("cartCount", "Cart("+shoppingCart.getProducts().size()+")");
                     }
-                    if (ctx.sessionAttribute("user") != null){
+                    if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
                         model.put("isLogged", true);
                     }else {
                         model.put("isLogged", false);
@@ -51,7 +51,7 @@ public class ProductController {
                     model.put("action_form", "/product/create");
                     model.put("action", "Create Product");
                     model.put("buying", false);
-                    if (ctx.sessionAttribute("user") != null){
+                    if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
                         model.put("isLogged", true);
                     }else {
                         model.put("isLogged", false);
@@ -72,7 +72,7 @@ public class ProductController {
                     model.put("action", "Edit Product");
                     model.put("action_form", "/product/edit/"+product.getId());
                     model.put("buying", false);
-                    if ( ctx.sessionAttribute("user") != null){
+                    if ( ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
                         model.put("isLogged", true);
                     }else {
                         model.put("isLogged", false);
@@ -86,7 +86,7 @@ public class ProductController {
                 ///edit post done
                 post("/edit/:id", ctx -> {
                     String name = ctx.formParam("name");
-                    if ( ctx.sessionAttribute("user") == null){
+                    if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
                         ctx.redirect("/user");
                     }
                     Integer amount = Integer.parseInt(Objects.requireNonNull(ctx.formParam("amount")));
@@ -101,7 +101,7 @@ public class ProductController {
                 });
 //done
                 post("/create", ctx -> {
-                    if ( ctx.sessionAttribute("user") == null){
+                    if ( ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
                         ctx.redirect("/product");
                     }
                     String name = ctx.formParam("name");
@@ -120,7 +120,7 @@ public class ProductController {
                 });
 //done
                 get("/delete/:id", ctx -> {
-                    if ( ctx.sessionAttribute("user") == null){
+                    if ( ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
                         ctx.redirect("/product");
                         return;
                     }
@@ -163,7 +163,7 @@ public class ProductController {
                     }else {
                         model.put("cartCount", "Cart("+shoppingCart.getProducts().size()+")");
                     }
-                    if (ctx.sessionAttribute("user") != null){
+                    if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
                         model.put("isLogged", true);
                         ctx.redirect("/product");
                     }else {
@@ -175,7 +175,6 @@ public class ProductController {
                 post("/buy/:id", ctx -> {
                     ArrayList<Product> productsCart = new ArrayList<>();
                     ShoppingCart shoppingCart = new ShoppingCart();
-                    shoppingCart.setName("Cart");
                     Product product = productService.findProductByIdAndActive(ctx.pathParam("id", Integer.class).get());
                     Product productselected = new Product();
                     productselected.setId(product.getId());
@@ -223,7 +222,7 @@ public class ProductController {
                     model.put("cartList", "Car List");
 
 
-                    if ( ctx.sessionAttribute("user") != null){
+                    if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
                         model.put("isLogged", true);
                         ctx.redirect("/product");
                     }else {
@@ -260,7 +259,7 @@ public class ProductController {
                     Client client = clientService.findClientByEmail(email);
                     ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
                     Receipt receipt = new Receipt();
-                    if ( ctx.sessionAttribute("user") != null){
+                    if ( ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
                         ctx.redirect("/product");
                     }
                     if (client.getEmail() == null){
