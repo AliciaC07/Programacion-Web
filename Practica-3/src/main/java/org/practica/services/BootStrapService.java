@@ -116,20 +116,35 @@ public class BootStrapService {
                 "ID_RECEIPT int not null,\n" +
                 "\tID_PRODUCT int not null,\n" +
                 "\tAMOUNT int not null,\n" +
-
+                "\tPRICE FLOAT not null,\n" +
                 "\tconstraint RECEIPT_PRODUCT_PRODUCT_ID_FK\n" +
                 "\t\tforeign key (ID_PRODUCT) references PRODUCT,\n" +
                 "\tconstraint RECEIPT_PRODUCT_RECEIPT_ID_FK\n" +
                 "\t\tforeign key (ID_RECEIPT) references RECEIPT" +
 
                 ");";
+        String sql_cookie_verification = "create table IF NOT EXISTS COOKIE_VERIFICATION\n" +
+                "(\n" +
+                "\tID INT auto_increment,\n" +
+                "\tUSERNAME VARCHAR(150) not null,\n" +
+                "\tTOKEN VARCHAR not null,\n" +
+                "\tDATE_CREATED DATE not null,\n" +
+                "\tDATE_UPDATED DATE\n" +
+                ");\n" +
+                "\n" +
+                "create unique index IF NOT EXISTS COOKIE_VERIFICATION_ID_UINDEX\n" +
+                "\ton COOKIE_VERIFICATION (ID);\n" +
+                "\n" +
+                "alter table COOKIE_VERIFICATION\n" +
+                "\tadd constraint IF NOT EXISTS COOKIE_VERIFICATION_PK\n" +
+                "\t\tprimary key (ID);";
 
         Statement statement = connection.createStatement();
         statement.execute(sql_user);
         statement.execute(sql_client);
         statement.execute(sql_product);
 //        statement.execute(sql_shopping_cart);
-//        statement.execute(sql_shoppingcart_product);
+        statement.execute(sql_cookie_verification);
         statement.execute(sql_receipt);
         statement.execute(sql_receipt_product);
         statement.close();

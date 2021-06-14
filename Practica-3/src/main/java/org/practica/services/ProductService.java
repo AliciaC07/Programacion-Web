@@ -106,7 +106,7 @@ public class ProductService {
         Connection connection = DataBaseService.getInstance().getConnection();
         boolean status = false;
         if (productFound != null){
-            String sql_update = "UPDATE PRODUCT SET NAME=?, PRICE=?, AMOUNT=?, ACTIVE = ? WHERE EASY_SHOP.PUBLIC.PRODUCT.ID = ?";
+            String sql_update = "UPDATE PRODUCT SET NAME=?, PRICE=?, AMOUNT=?, ACTIVE = ? WHERE ID = ?";
             try{
                 PreparedStatement ps = connection.prepareStatement(sql_update);
                 ps.setString(1, productFound.getName());

@@ -28,6 +28,7 @@ public class Main {
         ProductService productService = new ProductService();
         UserService userService = new UserService();
 
+
         for (Product pr: Shop.getInstance().getAllProducts()) {
             if (productService.findProductById(pr.getId()) == null){
                 productService.createProduct(pr);

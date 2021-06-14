@@ -35,7 +35,7 @@ public class ReceiptService {
             }
 
         }catch (SQLException e){
-            System.out.println("Occurred an error inserting the product");
+            System.out.println("Occurred an error inserting the receipt");
         }finally {
             try{
                 connection.close();
@@ -48,16 +48,17 @@ public class ReceiptService {
     public void insertProductReceipt(Receipt receipt, Product product){
         Connection connection = DataBaseService.getInstance().getConnection();
 
-        String sql_setProducts = "INSERT INTO RECEIPT_PRODUCT (ID_RECEIPT, ID_PRODUCT, AMOUNT) VALUES (?,?,?)";
+        String sql_setProducts = "INSERT INTO RECEIPT_PRODUCT (ID_RECEIPT, ID_PRODUCT, AMOUNT, PRICE) VALUES (?,?,?,?)";
         try{
             PreparedStatement ps = connection.prepareStatement(sql_setProducts);
             ps.setInt(1, receipt.getId());
             ps.setInt(2, product.getId());
             ps.setInt(3, product.getAmount());
+            ps.setFloat(4, product.getPrice());
             int row = ps.executeUpdate();
 
         }catch (SQLException e){
-            System.out.println("Occurred an error inserting the product");
+            System.out.println("Occurred an error inserting the receipt");
         }finally {
             try{
                 connection.close();
@@ -89,7 +90,7 @@ public class ReceiptService {
             ps.close();
             rs.close();
         }catch (SQLException e){
-            Logger.getLogger(ProductService.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(Receipt.class.getName()).log(Level.SEVERE, null, e);
         }finally {
             try{
                 connection.close();
@@ -113,8 +114,9 @@ public class ReceiptService {
             ResultSet rs = ps.executeQuery();
             while (rs.next()){
                 shoppingCart.setId(rs.getInt("ID_RECEIPT"));
-                Product product = productService.findProductByIdAndActive(rs.getInt("ID_PRODUCT"));
+                Product product = productService.findProductById(rs.getInt("ID_PRODUCT"));
                 product.setAmount(rs.getInt("AMOUNT"));
+                product.setPrice(rs.getFloat("PRICE"));
                 products.add(product);
 
             }

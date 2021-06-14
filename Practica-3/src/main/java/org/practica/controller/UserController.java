@@ -1,6 +1,7 @@
 package org.practica.controller;
 
 import io.javalin.Javalin;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.practica.models.User;
 import org.practica.services.Shop;
 import org.practica.services.UserService;
@@ -30,8 +31,9 @@ public class UserController {
 
                 get("/logout", ctx -> {
 
-                    if (ctx.cookie("userName") != null){
-                        ctx.removeCookie("userName","/");
+                    if (ctx.cookie("userToken") != null){
+                        userService.disableCookie(ctx.cookie("userToken"));
+                        ctx.removeCookie("userToken","/");
                     }
                     ctx.sessionAttribute("user", null);
 
@@ -42,6 +44,7 @@ public class UserController {
                     Map<String, Object> model = new HashMap<>();
                     String userName = ctx.formParam("userName");
                     String password = ctx.formParam("password");
+
                     if (userName == null || password == null){
                         ctx.redirect("/public/login.html");
                         return;
@@ -50,7 +53,16 @@ public class UserController {
                     if (userLog != null){
 
                         if (ctx.formParam("signed") != null){
-                            ctx.cookie("userName", userLog.getUserName(), 620000);
+                            String tokenCookie = shop.tokenCreated(userLog);
+                            ctx.cookie("userToken", tokenCookie);
+                            Map<String, String> cookieFound = userService.findCookieByUsername(userLog.getUserName());
+                            if (cookieFound.get("user") != null){
+                                userService.updateCookieVerification(userLog.getUserName(), tokenCookie);
+                            }else {
+                                userService.insertCookieVerification(userLog.getUserName(), tokenCookie);
+                            }
+
+
                         }
 
                         ctx.sessionAttribute("user", userLog);
@@ -62,7 +74,14 @@ public class UserController {
                         newUser.setPassword(password);
                         userService.createUser(newUser);
                         if (ctx.formParam("signed") != null){
-                            ctx.cookie("userName", newUser.getUserName(), 620000);
+                            String tokenCookie = shop.tokenCreated(newUser);
+                            ctx.cookie("userToken", tokenCookie);
+                            Map<String, String> cookieFound = userService.findCookieByUsername(newUser.getUserName());
+                            if (cookieFound.get("user") != null){
+                                userService.updateCookieVerification(newUser.getUserName(), tokenCookie);
+                            }else {
+                                userService.insertCookieVerification(newUser.getUserName(), tokenCookie);
+                            }
                         }
                         ctx.sessionAttribute("user", newUser);
 

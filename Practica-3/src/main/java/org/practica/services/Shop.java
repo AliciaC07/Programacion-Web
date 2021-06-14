@@ -1,6 +1,9 @@
 package org.practica.services;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import org.jasypt.util.password.StrongPasswordEncryptor;
+import org.practica.config.JwtGen;
 import org.practica.models.*;
 
 import java.util.ArrayList;
@@ -8,6 +11,7 @@ import java.util.NoSuchElementException;
 
 public class Shop {
     private static Shop shop = null;
+
     private ArrayList<Client> clients = new ArrayList<>();
     private ArrayList<Product> products = new ArrayList<>();
     private ArrayList<User> users = new ArrayList<>();
@@ -30,6 +34,39 @@ public class Shop {
             shop = new Shop();
         }
         return shop;
+    }
+    public String tokenCreated(User user){
+        String jwtId = "PacoFish";
+        String jwtIssuer = "JWT Gen";
+        String jwtSubject = user.getUserName();
+        int jwtTimeToLive = 620000;
+
+        return JwtGen.createJWT(
+                jwtId, // claim = jti
+                jwtIssuer, // claim = iss
+                jwtSubject, // claim = sub
+                jwtTimeToLive // used to calculate expiration (claim = exp)
+        );
+    }
+    public Boolean tokenVerify(String userName, String jwt){
+        String jwtId = "PacoFish";
+        String jwtIssuer = "JWT Gen";
+        try{
+            if (jwt != null){
+                Claims claims = JwtGen.decodeJWT(jwt);
+                if (claims.getId().equals(jwtId) && claims.getIssuer().equals(jwtIssuer) && claims.getSubject().equals(userName)){
+                    return true;
+                }else {
+                    return false;
+                }
+            }
+
+
+        }catch (JwtException e){
+            System.out.println("Token is invalid");
+        }
+
+        return false;
     }
     public Product createProduct(String name, Float price, Integer amount){
         Product product = new Product(1, name, price, amount);
@@ -116,11 +153,12 @@ public class Shop {
         return newUser;
     }
     public ShoppingCart deleteFromCart(ShoppingCart shoppingCart, Integer idProduct){
-        Product productBack = FindProductById(idProduct);
+        ProductService productService = new ProductService();
+        Product product = productService.findProductByIdAndActive(idProduct);
         for (Product aux: shoppingCart.getProducts()) {
-            if (aux.getId().equals(productBack.getId())){
-                productBack.setAmount(productBack.getAmount() + aux.getAmount());
-                updateProduct(productBack.getName(), productBack.getAmount(), productBack.getPrice(), idProduct);
+            if (aux.getId().equals(idProduct)){
+                product.setAmount(product.getAmount() + aux.getAmount());
+                productService.updateProduct(product);
                 shoppingCart.getProducts().remove(aux);
                 return shoppingCart;
             }
@@ -162,31 +200,6 @@ public class Shop {
     }
 
 
-
-    public Client createClient(Client client){
-        clients.add(client);
-        return client;
-    }
-
-    public  void  createReceipt(Receipt receipt){
-        if (receipts == null){
-            receipt.setId(1);
-            receipts.add(receipt);
-        }else {
-            receipt.setId(receipts.size()+1);
-            receipts.add(receipt);
-        }
-    }
-
-    public Client FindClientByEmail(String email){
-
-        for (Client aux: clients) {
-            if (aux.getEmail().equals(email)){
-                return aux;
-            }
-        }
-        return null;
-    }
     public User FindCUserByUsername(String userName){
         for (User aux: users) {
             if (aux.getUserName().equals(userName)){

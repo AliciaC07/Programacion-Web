@@ -25,7 +25,7 @@ public class ClientService {
             int row = ps.executeUpdate();
             status = row > 0;
         }catch (SQLException e){
-            System.out.println("Occurred an error inserting the product");
+            System.out.println("Occurred an error inserting the client");
         }finally {
             try{
                 connection.close();

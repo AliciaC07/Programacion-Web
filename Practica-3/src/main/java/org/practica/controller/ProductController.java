@@ -26,6 +26,8 @@ public class ProductController {
     public void applyRoutes() {
         app.routes(() -> {
             path("/product", () -> {
+
+
                 get("/", ctx -> {
                     Map<String, Object> model = new HashMap<>();
                     model.put("title", "Home");
@@ -36,8 +38,16 @@ public class ProductController {
                     }else {
                         model.put("cartCount", "Cart("+shoppingCart.getProducts().size()+")");
                     }
-                    if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
-                        model.put("isLogged", true);
+                    if ( ctx.cookie("userToken") != null || ctx.sessionAttribute("user") != null){
+
+                        Map<String, String> cookie  = userService.findCookie(ctx.cookie("userToken"));
+
+                        if (shop.tokenVerify(cookie.get("user"), (cookie.get("token")))){
+                            model.put("isLogged", true);
+                        }else{
+                            model.put("isLogged", false);
+                        }
+
                     }else {
                         model.put("isLogged", false);
                     }
@@ -51,7 +61,7 @@ public class ProductController {
                     model.put("action_form", "/product/create");
                     model.put("action", "Create Product");
                     model.put("buying", false);
-                    if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
+                    if (ctx.cookie("userToken") != null || ctx.sessionAttribute("user") != null){
                         model.put("isLogged", true);
                     }else {
                         model.put("isLogged", false);
@@ -72,8 +82,16 @@ public class ProductController {
                     model.put("action", "Edit Product");
                     model.put("action_form", "/product/edit/"+product.getId());
                     model.put("buying", false);
-                    if ( ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
-                        model.put("isLogged", true);
+                    if ( ctx.cookie("userToken") != null || ctx.sessionAttribute("user") != null){
+
+                        Map<String, String> cookie  = userService.findCookie(ctx.cookie("userToken"));
+
+                        if (shop.tokenVerify(cookie.get("user"), (cookie.get("token")))){
+                            model.put("isLogged", true);
+                        }else{
+                            model.put("isLogged", false);
+                        }
+
                     }else {
                         model.put("isLogged", false);
                         ctx.redirect("/user");
@@ -86,7 +104,7 @@ public class ProductController {
                 ///edit post done
                 post("/edit/:id", ctx -> {
                     String name = ctx.formParam("name");
-                    if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
+                    if (ctx.cookie("userToken") == null || ctx.sessionAttribute("user") == null){
                         ctx.redirect("/user");
                     }
                     Integer amount = Integer.parseInt(Objects.requireNonNull(ctx.formParam("amount")));
@@ -101,7 +119,7 @@ public class ProductController {
                 });
 //done
                 post("/create", ctx -> {
-                    if ( ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
+                    if ( ctx.cookie("userToken") == null || ctx.sessionAttribute("user") == null){
                         ctx.redirect("/product");
                     }
                     String name = ctx.formParam("name");
@@ -120,7 +138,7 @@ public class ProductController {
                 });
 //done
                 get("/delete/:id", ctx -> {
-                    if ( ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
+                    if ( ctx.cookie("userToken") == null ){
                         ctx.redirect("/product");
                         return;
                     }
@@ -148,6 +166,7 @@ public class ProductController {
                     ctx.redirect("/product/shopping-cart");
 
                 });
+
 ///working on
                 get("/buy/:id",ctx -> {
                     Product product = productService.findProductById(ctx.pathParam("id", Integer.class).get());
@@ -163,9 +182,16 @@ public class ProductController {
                     }else {
                         model.put("cartCount", "Cart("+shoppingCart.getProducts().size()+")");
                     }
-                    if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
-                        model.put("isLogged", true);
-                        ctx.redirect("/product");
+                    if ( ctx.cookie("userToken") != null ){
+                        Map<String, String> cookie  = userService.findCookie(ctx.cookie("userToken"));
+                        if (shop.tokenVerify(cookie.get("user"), (cookie.get("token")))){
+                            model.put("isLogged", true);
+                            ctx.redirect("/product");
+                        }else{
+                            model.put("isLogged", false);
+
+                        }
+
                     }else {
                         model.put("isLogged", false);
                     }
@@ -221,10 +247,16 @@ public class ProductController {
                     model.put("title", "ShoppingCart");
                     model.put("cartList", "Car List");
 
+                    if ( ctx.cookie("userToken") != null || ctx.sessionAttribute("user") != null){
 
-                    if (ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
-                        model.put("isLogged", true);
-                        ctx.redirect("/product");
+                        Map<String, String> cookie  = userService.findCookie(ctx.cookie("userToken"));
+                        if (shop.tokenVerify(cookie.get("user"), (cookie.get("token")))){
+                            model.put("isLogged", true);
+                            ctx.redirect("/product");
+                        }else{
+                            model.put("isLogged", false);
+                        }
+
                     }else {
                         model.put("isLogged", false);
                     }
@@ -259,7 +291,8 @@ public class ProductController {
                     Client client = clientService.findClientByEmail(email);
                     ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
                     Receipt receipt = new Receipt();
-                    if ( ctx.cookie("userName") != null || ctx.sessionAttribute("user") != null){
+                    Map<String, String> cookie  = userService.findCookie(ctx.cookie("userToken"));
+                    if (shop.tokenVerify(cookie.get("user"), (cookie.get("token")))){
                         ctx.redirect("/product");
                     }
                     if (client.getEmail() == null){
