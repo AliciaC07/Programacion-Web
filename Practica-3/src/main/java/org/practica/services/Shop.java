@@ -54,7 +54,8 @@ public class Shop {
         try{
             if (jwt != null){
                 Claims claims = JwtGen.decodeJWT(jwt);
-                if (claims.getId().equals(jwtId) && claims.getIssuer().equals(jwtIssuer) && claims.getSubject().equals(userName)){
+                if (claims.getId().equals(jwtId) && claims.getIssuer().equals(jwtIssuer)
+                        && claims.getSubject().equals(userName)){
                     return true;
                 }else {
                     return false;

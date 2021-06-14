@@ -74,26 +74,6 @@ public class BootStrapService {
                 "\n" +
                 "create unique index IF NOT EXISTS PRODUCT_ID_UINDEX_2\n" +
                 "\ton PRODUCT (ID);";
-//        String sql_shopping_cart ="create table IF NOT EXISTS SHOPPING_CART\n" +
-//                "(\n" +
-//                "\tID INT auto_increment,\n" +
-//                "\tNAME VARCHAR(100) not null,\n" +
-//                "\tconstraint SHOPPING_CART_PK\n" +
-//                "\t\tprimary key (ID)\n" +
-//                ");\n" +
-//                "\n" +
-//                "create unique index IF NOT EXISTS SHOPPING_CART_ID_UINDEX\n" +
-//                "\ton SHOPPING_CART (ID);\n";
-//        String sql_shoppingcart_product ="create table IF NOT EXISTS SHOPPING_CART_PRODUCT\n" +
-//                "(\n" +
-//                "\tID_SHOPPING_CART INT not null,\n" +
-//                "\tID_PRODUCT INT not null,\n" +
-//                "\tAMOUNT INT not null,\n" +
-//                "\tconstraint SHOPPING_CART_PRODUCT_PRODUCT_ID_FK\n" +
-//                "\t\tforeign key (ID_PRODUCT) references PRODUCT (ID),\n" +
-//                "\tconstraint SHOPPING_CART_PRODUCT_SHOPPING_CART_ID_FK\n" +
-//                "\t\tforeign key (ID_SHOPPING_CART) references SHOPPING_CART (ID)\n" +
-//                ");";
         String sql_receipt ="create table IF NOT EXISTS RECEIPT\n" +
                 "(\n" +
                 "\tID INT auto_increment,\n" +
@@ -143,10 +123,9 @@ public class BootStrapService {
         statement.execute(sql_user);
         statement.execute(sql_client);
         statement.execute(sql_product);
-//        statement.execute(sql_shopping_cart);
-        statement.execute(sql_cookie_verification);
         statement.execute(sql_receipt);
         statement.execute(sql_receipt_product);
+        statement.execute(sql_cookie_verification);
         statement.close();
         connection.close();
 

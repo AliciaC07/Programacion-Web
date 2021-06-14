@@ -38,7 +38,7 @@ public class ProductController {
                     }else {
                         model.put("cartCount", "Cart("+shoppingCart.getProducts().size()+")");
                     }
-                    if ( ctx.cookie("userToken") != null || ctx.sessionAttribute("user") != null){
+                    if ( ctx.cookie("userToken") != null){
 
                         Map<String, String> cookie  = userService.findCookie(ctx.cookie("userToken"));
 
@@ -61,7 +61,8 @@ public class ProductController {
                     model.put("action_form", "/product/create");
                     model.put("action", "Create Product");
                     model.put("buying", false);
-                    if (ctx.cookie("userToken") != null || ctx.sessionAttribute("user") != null){
+                    model.put("edit", false);
+                    if (ctx.cookie("userToken") != null){
                         model.put("isLogged", true);
                     }else {
                         model.put("isLogged", false);
@@ -82,7 +83,8 @@ public class ProductController {
                     model.put("action", "Edit Product");
                     model.put("action_form", "/product/edit/"+product.getId());
                     model.put("buying", false);
-                    if ( ctx.cookie("userToken") != null || ctx.sessionAttribute("user") != null){
+                    model.put("edit", true);
+                    if ( ctx.cookie("userToken") != null ){
 
                         Map<String, String> cookie  = userService.findCookie(ctx.cookie("userToken"));
 
@@ -104,7 +106,7 @@ public class ProductController {
                 ///edit post done
                 post("/edit/:id", ctx -> {
                     String name = ctx.formParam("name");
-                    if (ctx.cookie("userToken") == null || ctx.sessionAttribute("user") == null){
+                    if (ctx.cookie("userToken") == null ){
                         ctx.redirect("/user");
                     }
                     Integer amount = Integer.parseInt(Objects.requireNonNull(ctx.formParam("amount")));
@@ -119,7 +121,7 @@ public class ProductController {
                 });
 //done
                 post("/create", ctx -> {
-                    if ( ctx.cookie("userToken") == null || ctx.sessionAttribute("user") == null){
+                    if ( ctx.cookie("userToken") == null ){
                         ctx.redirect("/product");
                     }
                     String name = ctx.formParam("name");
@@ -174,6 +176,7 @@ public class ProductController {
                     model.put("title", "Buy Product");
                     model.put("action", "Buy Product");
                     model.put("buying", true);
+                    model.put("edit", false);
                     model.put("action_form", "/product/buy/"+product.getId());
                     model.put("product", product);
                     ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
@@ -247,7 +250,7 @@ public class ProductController {
                     model.put("title", "ShoppingCart");
                     model.put("cartList", "Car List");
 
-                    if ( ctx.cookie("userToken") != null || ctx.sessionAttribute("user") != null){
+                    if ( ctx.cookie("userToken") != null){
 
                         Map<String, String> cookie  = userService.findCookie(ctx.cookie("userToken"));
                         if (shop.tokenVerify(cookie.get("user"), (cookie.get("token")))){

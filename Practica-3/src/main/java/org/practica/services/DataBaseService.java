@@ -31,7 +31,7 @@ public class DataBaseService {
         try {
             connection = DriverManager.getConnection(URL_DATABASE, "sa", "");
         } catch (SQLException ex) {
-            System.out.println("Couldnt connect to the database");
+            System.out.println("Couldn't connect to the database");
         }
         return connection;
 

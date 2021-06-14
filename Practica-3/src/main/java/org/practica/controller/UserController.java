@@ -26,6 +26,9 @@ public class UserController {
                 get("/", ctx -> {
                     Map<String, Object> model = new HashMap<>();
                     model.put("title", "Shop");
+                    if (ctx.cookie("userToken") != null){
+                        ctx.redirect("/product");
+                    }
                     ctx.render("/public/login.html",model);
                 });
 
@@ -35,7 +38,7 @@ public class UserController {
                         userService.disableCookie(ctx.cookie("userToken"));
                         ctx.removeCookie("userToken","/");
                     }
-                    ctx.sessionAttribute("user", null);
+
 
                     ctx.redirect("/product");
                 });
@@ -65,7 +68,6 @@ public class UserController {
 
                         }
 
-                        ctx.sessionAttribute("user", userLog);
                     }else{
                         //crear user
 
@@ -83,7 +85,7 @@ public class UserController {
                                 userService.insertCookieVerification(newUser.getUserName(), tokenCookie);
                             }
                         }
-                        ctx.sessionAttribute("user", newUser);
+
 
 
                     }
