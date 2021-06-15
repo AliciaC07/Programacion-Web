@@ -48,6 +48,8 @@ public class ProductController {
                             model.put("isLogged", false);
                         }
 
+                    }else if (ctx.sessionAttribute("user") != null){
+                        model.put("isLogged", true);
                     }else {
                         model.put("isLogged", false);
                     }
@@ -63,6 +65,8 @@ public class ProductController {
                     model.put("buying", false);
                     model.put("edit", false);
                     if (ctx.cookie("userToken") != null){
+                        model.put("isLogged", true);
+                    }else if (ctx.sessionAttribute("user") != null){
                         model.put("isLogged", true);
                     }else {
                         model.put("isLogged", false);
@@ -94,6 +98,8 @@ public class ProductController {
                             model.put("isLogged", false);
                         }
 
+                    }else if (ctx.sessionAttribute("user") != null){
+                        model.put("isLogged", true);
                     }else {
                         model.put("isLogged", false);
                         ctx.redirect("/user");
@@ -140,10 +146,7 @@ public class ProductController {
                 });
 //done
                 get("/delete/:id", ctx -> {
-                    if ( ctx.cookie("userToken") == null ){
-                        ctx.redirect("/product");
-                        return;
-                    }
+
                     //shop.deleteProduct(ctx.pathParam("id", Integer.class).get());
                     productService.deleteProduct(ctx.pathParam("id", Integer.class).get());
 
@@ -195,6 +198,9 @@ public class ProductController {
 
                         }
 
+                    }else if (ctx.sessionAttribute("user") != null){
+                        model.put("isLogged", true);
+                        ctx.redirect("/product");
                     }else {
                         model.put("isLogged", false);
                     }
@@ -260,6 +266,9 @@ public class ProductController {
                             model.put("isLogged", false);
                         }
 
+                    }else if (ctx.sessionAttribute("user") != null){
+                        model.put("isLogged", true);
+                        ctx.redirect("/product");
                     }else {
                         model.put("isLogged", false);
                     }

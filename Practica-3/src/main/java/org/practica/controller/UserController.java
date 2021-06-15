@@ -28,6 +28,8 @@ public class UserController {
                     model.put("title", "Shop");
                     if (ctx.cookie("userToken") != null){
                         ctx.redirect("/product");
+                    }else if (ctx.sessionAttribute("user") != null){
+                        ctx.redirect("/product");
                     }
                     ctx.render("/public/login.html",model);
                 });
@@ -37,6 +39,8 @@ public class UserController {
                     if (ctx.cookie("userToken") != null){
                         userService.disableCookie(ctx.cookie("userToken"));
                         ctx.removeCookie("userToken","/");
+                    }else if (ctx.sessionAttribute("user") != null){
+                        ctx.req.getSession().invalidate();
                     }
 
 
@@ -64,9 +68,9 @@ public class UserController {
                             }else {
                                 userService.insertCookieVerification(userLog.getUserName(), tokenCookie);
                             }
-
-
                         }
+                        ctx.sessionAttribute("user", userLog);
+
 
                     }else{
                         //crear user
@@ -85,6 +89,8 @@ public class UserController {
                                 userService.insertCookieVerification(newUser.getUserName(), tokenCookie);
                             }
                         }
+                        ctx.sessionAttribute("user", newUser);
+
 
 
 

@@ -28,6 +28,8 @@ public class SalesController {
                     model.put("class", "nav-link active");
                     if ( ctx.cookie("userToken") != null ){
                         model.put("isLogged", true);
+                    }else if (ctx.sessionAttribute("user") != null){
+                        model.put("isLogged", true);
                     }else {
                         model.put("isLogged", false);
                         ctx.redirect("/user");
