@@ -1,0 +1,34 @@
+org/practica/services/DataBaseService.java
+ org.practica.services.DataBaseService
+org/practica/models/Product.java
+ org.practica.models.Product
+org/practica/models/ShoppingCart.java
+ org.practica.models.ShoppingCart
+org/practica/models/User.java
+ org.practica.models.User
+org/practica/services/BootStrapService.java
+ org.practica.services.BootStrapService
+org/practica/services/ProductService.java
+ org.practica.services.ProductService
+org/practica/services/UserService.java
+ org.practica.services.UserService
+org/practica/config/JwtGen.java
+ org.practica.config.JwtGen
+org/practica/services/ClientService.java
+ org.practica.services.ClientService
+org/practica/services/ReceiptService.java
+ org.practica.services.ReceiptService
+org/practica/services/Shop.java
+ org.practica.services.Shop
+org/practica/models/Receipt.java
+ org.practica.models.Receipt
+org/practica/models/Client.java
+ org.practica.models.Client
+org/practica/controller/UserController.java
+ org.practica.controller.UserController
+org/practica/controller/SalesController.java
+ org.practica.controller.SalesController
+org/practica/controller/ProductController.java
+ org.practica.controller.ProductController
+org/practica/Main.java
+ org.practica.Main
