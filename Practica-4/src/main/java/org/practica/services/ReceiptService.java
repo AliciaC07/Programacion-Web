@@ -7,6 +7,7 @@ import org.practica.models.ShoppingCart;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -82,7 +83,7 @@ public class ReceiptService {
                 receipt.setClient(clientService.findClientByEmail(rs.getString("EMAIL_CLIENT")));
                 receipt.setDate(rs.getDate("DATE").toLocalDate());
                 receipt.setSalesman(userService.findUserbyId(rs.getInt("ID_USER")));
-                receipt.setShoppingCart(findProductsRecipt(rs.getInt("ID")));
+                receipt.setProducts(findProductsRecipt(rs.getInt("ID")));
                 receipts.add(receipt);
 
 
@@ -101,7 +102,7 @@ public class ReceiptService {
         return receipts;
 
     }
-    public ShoppingCart findProductsRecipt(Integer id){
+    public List<Product> findProductsRecipt(Integer id){
         Connection connection = DataBaseService.getInstance().getConnection();
         ShoppingCart shoppingCart = new ShoppingCart();
         ProductService productService = new ProductService();
@@ -132,7 +133,7 @@ public class ReceiptService {
                 System.out.println("Occurred an error closing the connection");
             }
         }
-        return shoppingCart;
+        return products;
     }
 
 }

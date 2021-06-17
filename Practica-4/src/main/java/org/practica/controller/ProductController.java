@@ -314,7 +314,8 @@ public class ProductController {
                         newClient.setEmail(email);
                         clientService.createClient(newClient);
                         receipt.setClient(newClient);
-                        receipt.setShoppingCart(shoppingCart);
+                        //receipt.setShoppingCart(shoppingCart);
+                        receipt.setProducts(shoppingCart.getProducts());
                         User user = userService.findUserbyUsername("aliciac07");
                         receipt.setSalesman(user);
                         receipt.setDate(LocalDate.now());
@@ -327,11 +328,12 @@ public class ProductController {
 
                         ctx.sessionAttribute("cart", null);
                         ctx.redirect("/product");
-                        System.out.println(receipt.getShoppingCart().getTotal());
+
 
                     }else{
                         receipt.setClient(client);
-                        receipt.setShoppingCart(shoppingCart);
+                        //receipt.setShoppingCart(shoppingCart);
+                        receipt.setProducts(shoppingCart.getProducts());
                         User user = userService.findUserbyUsername("aliciac07");
                         receipt.setSalesman(user);
                         receipt.setDate(LocalDate.now());
@@ -343,7 +345,7 @@ public class ProductController {
                         }
 
                         ctx.sessionAttribute("cart", null);
-                        System.out.println(receipt.getShoppingCart().getTotal());
+                        //System.out.println(receipt.getShoppingCart().getTotal());
                         ctx.redirect("/product");
 
                     }
