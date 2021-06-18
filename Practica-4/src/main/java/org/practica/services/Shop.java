@@ -153,25 +153,25 @@ public class Shop {
         }
         return newUser;
     }
-    public ShoppingCart deleteFromCart(ShoppingCart shoppingCart, Integer idProduct){
-        ProductService productService = new ProductService();
-        Product product = productService.findProductByIdAndActive(idProduct);
-        for (Product aux: shoppingCart.getProducts()) {
-            if (aux.getId().equals(idProduct)){
-                product.setAmount(product.getAmount() + aux.getAmount());
-                productService.updateProduct(product);
-                shoppingCart.getProducts().remove(aux);
-                return shoppingCart;
-            }
-        }
-        return null;
-    }
-    public ShoppingCart removeAllFromCart(ShoppingCart shoppingCart){
-        for (int i = shoppingCart.getProducts().size() - 1; i >= 0; i--) {
-            deleteFromCart(shoppingCart, shoppingCart.getProducts().get(i).getId());
-        }
-        return shoppingCart;
-    }
+//    public ShoppingCart deleteFromCart(ShoppingCart shoppingCart, Integer idProduct){
+//        ProductService productService = new ProductService();
+//        Product product = productService.findProductByIdAndActive(idProduct);
+//        for (Product aux: shoppingCart.getProducts()) {
+//            if (aux.getId().equals(idProduct)){
+//                product.setAmount(product.getAmount() + aux.getAmount());
+//                productService.updateProduct(product);
+//                shoppingCart.getProducts().remove(aux);
+//                return shoppingCart;
+//            }
+//        }
+//        return null;
+//    }
+//    public ShoppingCart removeAllFromCart(ShoppingCart shoppingCart){
+//        for (int i = shoppingCart.getProducts().size() - 1; i >= 0; i--) {
+//            deleteFromCart(shoppingCart, shoppingCart.getProducts().get(i).getId());
+//        }
+//        return shoppingCart;
+//    }
 
     public ArrayList<Product> getAllProducts(){
         return products;

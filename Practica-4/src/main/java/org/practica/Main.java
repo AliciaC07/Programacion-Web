@@ -4,15 +4,12 @@ import io.javalin.Javalin;
 import io.javalin.core.util.RouteOverviewPlugin;
 import io.javalin.plugin.rendering.JavalinRenderer;
 import io.javalin.plugin.rendering.template.JavalinThymeleaf;
-import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.practica.controller.ProductController;
-import org.practica.controller.SalesController;
-import org.practica.controller.UserController;
 import org.practica.models.Product;
-import org.practica.models.User;
 import org.practica.services.*;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
@@ -23,22 +20,18 @@ public class Main {
             JavalinRenderer.register(JavalinThymeleaf.INSTANCE, ".html");
         }).start(7001);
         BootStrapService.startDb();
-        DataBaseService.getInstance().testConexion();
-        BootStrapService.createTables();
-        ProductService productService = new ProductService();
-        UserService userService = new UserService();
+        ArrayList<Product> products = new ArrayList<>();
+        products.add(new Product(null ,"Milk", 10.00f, 3));
+        products.add(new Product( null,"Bread", 5.00f, 2));
+        products.add(new Product(null, "Soap", 2.00f, 3));
+        products.add(new Product(null,"Beer", 15.00f, 3));
+        products.add(new Product(null,"Paper", 15.00f, 0));
+        for (Product p: products) {
+            ProductService.getInstance().create(p);
+        }
 
 
-        for (Product pr: Shop.getInstance().getAllProducts()) {
-            if (productService.findProductById(pr.getId()) == null){
-                productService.createProduct(pr);
-            }
-        }
-        for (User user: Shop.getInstance().getallUser()) {
-            if (userService.findUserbyUsername(user.getUserName()) == null){
-                userService.createUser(user);
-            }
-        }
+
 
 
 
@@ -48,8 +41,8 @@ public class Main {
         //app.get("/", ctx -> ctx.result("Hola Mundo en Javalin :-D"));
 
         new ProductController(app).applyRoutes();
-        new UserController(app).applyRoutes();
-        new SalesController(app).applyRoutes();
+//        new UserController(app).applyRoutes();
+//        new SalesController(app).applyRoutes();
 
 
     }

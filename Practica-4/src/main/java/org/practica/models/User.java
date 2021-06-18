@@ -3,16 +3,17 @@ package org.practica.models;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Getter
 @Setter
 @Entity
-public class User {
+@NamedQueries({@NamedQuery(name = "User.findUserByUsername", query = "select u from User  u where u.userName like :username")})
+public class User implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column
     private String userName;

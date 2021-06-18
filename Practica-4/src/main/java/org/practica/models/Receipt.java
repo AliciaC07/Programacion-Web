@@ -5,15 +5,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
 @Getter
 @Setter
 @Entity
-public class Receipt {
+public class Receipt implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column
     private LocalDate date;
@@ -27,8 +29,8 @@ public class Receipt {
     @Column
     private Float total;
 
-    @OneToMany(mappedBy = "receipt")
-    private List<Product> products;
+    @OneToMany(mappedBy = "receipt", cascade = CascadeType.ALL)
+    private List<ReceiptDetail> receiptDetails;
 
     public Receipt() {
     }
