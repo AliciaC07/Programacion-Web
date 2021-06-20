@@ -30,6 +30,11 @@ public class Main {
         products.add(new Product(null, "Soap", 2.00f, 3,"Product"));
         products.add(new Product(null, "Beer", 15.00f, 3,"Product"));
         products.add(new Product(null, "Paper", 15.00f, 0,"Product"));
+        products.add(new Product(null, "Apple", 2.00f, 3,"Product"));
+        products.add(new Product(null, "Pear", 15.00f, 3,"Product"));
+        products.add(new Product(null, "Banana", 15.00f, 3,"Product"));
+        products.add(new Product(null, "Lemon", 2.00f, 3,"Product"));
+        products.add(new Product(null, "Juice", 2.00f, 3,"Product"));
         for (Product p: products) {
             ProductService.getInstance().create(p);
         }

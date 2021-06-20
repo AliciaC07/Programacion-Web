@@ -60,27 +60,24 @@
                     </table>
                     <div style="justify-self: center">
                         <ul class="pagination">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#">&laquo;</a>
-                            </li>
-                            <li class="page-item active">
-                                <a class="page-link" href="#">1</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">2</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">3</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">4</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">5</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">&raquo;</a>
-                            </li>
+                            <th:block th:each="page : ${pages}">
+                                <li class="page-item" th:if="${page} == 1">
+                                    <a class="page-link"  href="#" th:href=" ${currentPage} == 1 ? '/product'+'?pag='+${currentPage} : '/product'+'?pag='+${currentPage-1}">&laquo;</a>
+                                </li>
+                                <li class="page-item active" th:if="${page} == ${currentPage}">
+                                    <a class="page-link" th:text="${page}" href="#">1</a>
+                                </li>
+                                <li class="page-item" th:if="${page} != ${currentPage} and ${page} != -1">
+                                    <a class="page-link" th:text="${page}" th:href="'/product'+'?pag='+${page}">2</a>
+                                </li>
+                                <li class="page-item disabled" th:if="${page} == -1">
+                                    <a class="page-link" href="#">...</a>
+                                </li>
+
+                                <li class="page-item" th:if="${page} == ${totalPages}">
+                                    <a class="page-link" th:href=" ${currentPage} == ${totalPages} ? '/product'+'?pag='+${currentPage} : '/product'+'?pag='+${currentPage+1}">&raquo;</a>
+                                </li>
+                            </th:block>
                         </ul>
                     </div>
                 </div>

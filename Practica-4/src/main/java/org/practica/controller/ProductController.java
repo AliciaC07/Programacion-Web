@@ -31,12 +31,34 @@ public class ProductController {
                 get("/", ctx -> {
                     Map<String, Object> model = new HashMap<>();
                     model.put("title", "Home");
-                    Integer total = Double.valueOf(Math.ceil(productService.findAllByActiveTrue().size() / 3)).intValue();
-                    Integer actualPage = 1;
-                    if (ctx.que)
-                    model.put("products", productService.findAllByActiveTrue());
-
-                    List<Product> p = productService.findAllByActiveTruePagination(4,1);
+                    Integer currentPage = 1;
+                    Integer pageIndex = 0;
+                    if (ctx.queryParam("pag") != null){
+                        pageIndex = ctx.queryParam("pag",Integer.class).get();
+                    }else {
+                        pageIndex = currentPage;
+                    }
+                    Integer pageSize = 4;
+                    Integer total = (productService.findAllByActiveTrue().size()+(pageSize-1))/pageSize;
+                    System.out.println(total);
+                    ArrayList<Integer> pages = new ArrayList<>();
+                    for (int i =0; i < total; i++){
+                        pages.add(i+1);
+                    }
+                    if (ctx.queryParam("pag") != null){
+                        double div = Math.ceil((pageIndex.doubleValue()-1)/pageSize.doubleValue());
+                        currentPage = Double.valueOf(div).intValue()+1;
+                        if (currentPage < ctx.queryParam("pag",Integer.class).get()){
+                            currentPage = ctx.queryParam("pag",Integer.class).get();
+                        }
+                    }else {
+                        currentPage = 1;
+                    }
+                    model.put("currentPage",currentPage);
+                    model.put("pages", pages);
+                    model.put("products", productService.findAllByActiveTruePagination(pageSize, currentPage));
+                    model.put("totalPages", total);
+                    List<Product> p = productService.findAllByActiveTruePagination(pageSize,currentPage);
                     System.out.println(p.size());
                     System.out.println(p.get(0).getName());
                     ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
