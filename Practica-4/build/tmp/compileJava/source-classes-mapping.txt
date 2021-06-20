@@ -1,45 +1,47 @@
 org/practica/repository/Repository.java
  org.practica.repository.Repository
+org/practica/controller/ReceiptController.java
+ org.practica.controller.ReceiptController
 org/practica/config/JwtGen.java
  org.practica.config.JwtGen
 org/practica/services/ClientService.java
  org.practica.services.ClientService
 org/practica/models/Picture.java
  org.practica.models.Picture
-org/practica/models/Comments.java
- org.practica.models.Comments
+org/practica/models/CookieVerification.java
+ org.practica.models.CookieVerification
 org/practica/services/PictureService.java
  org.practica.services.PictureService
 org/practica/services/BootStrapService.java
  org.practica.services.BootStrapService
-org/practica/models/Receipt.java
- org.practica.models.Receipt
 org/practica/models/Client.java
  org.practica.models.Client
+org/practica/models/Receipt.java
+ org.practica.models.Receipt
 org/practica/services/CookieVerificationService.java
  org.practica.services.CookieVerificationService
 org/practica/services/ReceiptService.java
  org.practica.services.ReceiptService
-org/practica/services/CommentService.java
- org.practica.services.CommentService
-org/practica/services/UserService.java
- org.practica.services.UserService
-org/practica/services/DataBaseService.java
- org.practica.services.DataBaseService
-org/practica/models/CookieVerification.java
- org.practica.models.CookieVerification
 org/practica/models/User.java
  org.practica.models.User
-org/practica/services/ProductService.java
- org.practica.services.ProductService
-org/practica/services/Shop.java
- org.practica.services.Shop
+org/practica/services/UserService.java
+ org.practica.services.UserService
+org/practica/models/Comments.java
+ org.practica.models.Comments
+org/practica/services/CommentService.java
+ org.practica.services.CommentService
 org/practica/models/Product.java
  org.practica.models.Product
 org/practica/models/ReceiptDetail.java
  org.practica.models.ReceiptDetail
+org/practica/controller/UserController.java
+ org.practica.controller.UserController
 org/practica/models/ShoppingCart.java
  org.practica.models.ShoppingCart
+org/practica/services/ProductService.java
+ org.practica.services.ProductService
+org/practica/services/Shop.java
+ org.practica.services.Shop
 org/practica/controller/ProductController.java
  org.practica.controller.ProductController
 org/practica/Main.java

@@ -2,11 +2,13 @@ package org.practica.services;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
+import jdk.management.jfr.RecordingInfo;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.practica.config.JwtGen;
 import org.practica.models.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public class Shop {
@@ -20,11 +22,11 @@ public class Shop {
     StrongPasswordEncryptor spe = new StrongPasswordEncryptor();
 
     private Shop() {
-        products.add(new Product(1, "Milk", 10.00f, 3));
-        products.add(new Product(2, "Bread", 5.00f, 2));
-        products.add(new Product(3, "Soap", 2.00f, 3));
-        products.add(new Product(4, "Beer", 15.00f, 3));
-        products.add(new Product(5, "Paper", 15.00f, 0));
+        products.add(new Product(1, "Milk", 10.00f, 3, "Product"));
+        products.add(new Product(2, "Bread", 5.00f, 2,"Product"));
+        products.add(new Product(3, "Soap", 2.00f, 3,"Product"));
+        products.add(new Product(4, "Beer", 15.00f, 3,"Product"));
+        products.add(new Product(5, "Paper", 15.00f, 0,"Product"));
         users.add(new User(1, "aliciac07", "123"));
 
     }
@@ -69,17 +71,17 @@ public class Shop {
 
         return false;
     }
-    public Product createProduct(String name, Float price, Integer amount){
-        Product product = new Product(1, name, price, amount);
-        if (products == null){
-            products.add(product);
-            return product;
-        }else {
-            product.setId(products.size()+1);
-            products.add(product);
-            return product;
-        }
-    }
+//    public Product createProduct(String name, Float price, Integer amount){
+//        Product product = new Product(1, name, price, amount);
+//        if (products == null){
+//            products.add(product);
+//            return product;
+//        }else {
+//            product.setId(products.size()+1);
+//            products.add(product);
+//            return product;
+//        }
+//    }
 
     public Product updateProduct(String name, Integer amount, Float price, Integer id){
         Product productFound = FindProductById(id);
@@ -102,6 +104,19 @@ public class Shop {
         }else {
             throw new NoSuchElementException("This product doesn't exists");
         }
+    }
+    public List<ReceiptDetail> buildReceiptDetail(ShoppingCart shoppingCart, Receipt receipt){
+        List<ReceiptDetail> receiptDetails = new ArrayList<>();
+        for (Product p : shoppingCart.getProducts()) {
+            ReceiptDetail receiptDetail = new ReceiptDetail();
+            receiptDetail.setReceipt(receipt);
+            receiptDetail.setProduct(p);
+            receiptDetail.setPrice(p.getPrice());
+            receiptDetail.setQuantity(p.getAmount());
+            receiptDetails.add(receiptDetail);
+        }
+        return receiptDetails;
+
     }
     public ShoppingCart createShoppingCart(ShoppingCart shoppingCart){
         if (shoppingCarts == null){
@@ -153,25 +168,25 @@ public class Shop {
         }
         return newUser;
     }
-//    public ShoppingCart deleteFromCart(ShoppingCart shoppingCart, Integer idProduct){
-//        ProductService productService = new ProductService();
-//        Product product = productService.findProductByIdAndActive(idProduct);
-//        for (Product aux: shoppingCart.getProducts()) {
-//            if (aux.getId().equals(idProduct)){
-//                product.setAmount(product.getAmount() + aux.getAmount());
-//                productService.updateProduct(product);
-//                shoppingCart.getProducts().remove(aux);
-//                return shoppingCart;
-//            }
-//        }
-//        return null;
-//    }
-//    public ShoppingCart removeAllFromCart(ShoppingCart shoppingCart){
-//        for (int i = shoppingCart.getProducts().size() - 1; i >= 0; i--) {
-//            deleteFromCart(shoppingCart, shoppingCart.getProducts().get(i).getId());
-//        }
-//        return shoppingCart;
-//    }
+    public ShoppingCart deleteFromCart(ShoppingCart shoppingCart, Integer idProduct){
+        ProductService productService =  ProductService.getInstance();
+        Product product = productService.findProductByActiveTrue(idProduct);
+        for (Product aux: shoppingCart.getProducts()) {
+            if (aux.getId().equals(idProduct)){
+                product.setAmount(product.getAmount() + aux.getAmount());
+                productService.edit(product);
+                shoppingCart.getProducts().remove(aux);
+                return shoppingCart;
+            }
+        }
+        return null;
+    }
+    public ShoppingCart removeAllFromCart(ShoppingCart shoppingCart){
+        for (int i = shoppingCart.getProducts().size() - 1; i >= 0; i--) {
+            deleteFromCart(shoppingCart, shoppingCart.getProducts().get(i).getId());
+        }
+        return shoppingCart;
+    }
 
     public ArrayList<Product> getAllProducts(){
         return products;

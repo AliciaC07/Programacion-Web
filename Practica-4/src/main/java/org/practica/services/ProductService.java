@@ -1,5 +1,6 @@
 package org.practica.services;
 
+import org.hibernate.Session;
 import org.practica.models.Product;
 import org.practica.repository.Repository;
 
@@ -23,9 +24,18 @@ public class ProductService extends Repository<Product> {
 
     public List<Product> findAllByActiveTrue(){
         EntityManager entityManager = getEntityManager();
-        Query query = entityManager.createNativeQuery("SELECT * from PRODUCT WHERE ACTIVE = true", Product.class);
+        Query query = entityManager.createQuery("SELECT p from Product p WHERE p.active = true", Product.class);
         List<Product> products = query.getResultList();
         return products;
+    }
+    public List<Product> findAllByActiveTruePagination(int pageSize, int lastPageNumber){
+        EntityManager entityManager = getEntityManager();
+        Query selectQuery = entityManager.createQuery("select p from Product p where p.active = true");
+        selectQuery.setFirstResult((lastPageNumber - 1) * pageSize);
+        selectQuery.setMaxResults(pageSize);
+        List<Product> lastPage = selectQuery.getResultList();
+        return lastPage;
+
     }
     public Product findProductByActiveTrue(Integer id){
         EntityManager entityManager = getEntityManager();
@@ -34,6 +44,7 @@ public class ProductService extends Repository<Product> {
         List<Product> products = query.getResultList();
         return products.get(0);
     }
+
 
 
 

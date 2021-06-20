@@ -57,7 +57,7 @@ public class Repository <T> {
         entityManager.getTransaction().begin();
         try{
             T entity = entityManager.find(entityClass, entityId);
-            entityManager.remove(entityManager);
+            entityManager.remove(entity);
             entityManager.getTransaction().commit();
             status = true;
         }finally {

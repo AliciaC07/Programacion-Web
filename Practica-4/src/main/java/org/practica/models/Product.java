@@ -1,5 +1,6 @@
 package org.practica.models;
 
+import jdk.jfr.Name;
 import lombok.Getter;
 import lombok.Setter;
 import org.practica.services.PictureService;
@@ -18,7 +19,7 @@ import java.util.Set;
 public class Product implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column
     private String name;
@@ -42,12 +43,14 @@ public class Product implements Serializable {
 
 
 
-    public Product(Integer id, String name, Float price, Integer amount) {
+    public Product(Integer id, String name, Float price, Integer amount, String description) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.amount = amount;
+        this.description = description;
     }
+
 
     public Product() {
     }
