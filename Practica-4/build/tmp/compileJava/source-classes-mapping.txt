@@ -40,9 +40,9 @@ org/practica/services/PictureService.java
  org.practica.services.PictureService
 org/practica/services/CommentService.java
  org.practica.services.CommentService
+org/practica/controller/UserController.java
+ org.practica.controller.UserController
 org/practica/controller/ProductController.java
  org.practica.controller.ProductController
 org/practica/Main.java
  org.practica.Main
-org/practica/controller/UserController.java
- org.practica.controller.UserController

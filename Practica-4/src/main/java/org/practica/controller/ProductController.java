@@ -11,6 +11,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
+import static io.javalin.apibuilder.ApiBuilder.get;
 
 public class ProductController {
     private final Javalin app;
@@ -21,6 +22,7 @@ public class ProductController {
     private UserService userService = UserService.getInstance();
     private ReceiptService receiptService = ReceiptService.getInstance();
     private CommentService commentService = CommentService.getInstance();
+
     private Shop shop = Shop.getInstance();
 
     public ProductController(Javalin app) {
@@ -108,7 +110,7 @@ public class ProductController {
                     }
 
 
-                    ctx.render("/public/product.html", model);
+                    ctx.render("/public/NewProduct.html", model);
                 });
                 post("/create", ctx -> {
                     if ( ctx.cookie("userToken") == null ){
@@ -129,8 +131,11 @@ public class ProductController {
                             byte[] bytes = uploadedFile.getContent().readAllBytes();
                             String encodedString = Base64.getEncoder().encodeToString(bytes);
                             Picture picture = new Picture(null, uploadedFile.getFilename(), uploadedFile.getContentType(), encodedString);
-                            pictureService.create(picture);
-                            product.PictureAdd(picture);
+                            if (!uploadedFile.getFilename().isBlank()){
+                                pictureService.create(picture);
+                                product.PictureAdd(picture);
+                            }
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -191,19 +196,23 @@ public class ProductController {
                     product.setActive(active);
                     product.setAmount(amount);
 
-                    ctx.uploadedFiles("picture").forEach(uploadedFile -> {
-                        try {
-                            byte[] bytes = uploadedFile.getContent().readAllBytes();
-                            String encodedString = Base64.getEncoder().encodeToString(bytes);
-                            Picture picture = new Picture(null, uploadedFile.getFilename(), uploadedFile.getContentType(), encodedString);
-                            pictureService.create(picture);
-                            //product.PictureAdd(picture);
-                            product.getPictures().add(picture);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                    System.out.println(ctx.uploadedFiles("picture").size());
+                        ctx.uploadedFiles("picture").forEach(uploadedFile -> {
+                            try {
+                                byte[] bytes = uploadedFile.getContent().readAllBytes();
+                                String encodedString = Base64.getEncoder().encodeToString(bytes);
+                                Picture picture = new Picture(null, uploadedFile.getFilename(), uploadedFile.getContentType(), encodedString);
+                                if (!uploadedFile.getFilename().isBlank()){
+                                    pictureService.create(picture);
+                                    product.getPictures().add(picture);
+                                }
 
-                    });
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        });
+
                     productService.edit(product);
                     ctx.redirect("/product");
 
@@ -479,6 +488,7 @@ public class ProductController {
                     }
 
                 });
+
 
             });
         });
