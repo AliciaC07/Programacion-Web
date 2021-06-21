@@ -50,7 +50,6 @@
                             <td class="text-center">
                                 <a th:href="'/product/edit/'+${product.id}" th:hidden="!${isLogged}"><button type="button" class="btn btn-warning">Edit</button></a>
                                 <a th:href="'/product/delete/'+${product.id}" th:hidden="!${isLogged}" ><button type="button" class="btn btn-danger">Delete</button></a>
-                                <a th:href="'/product/buy/'+${product.id}" th:hidden="${isLogged}" ><button type="button" class="btn btn-success">Buy</button></a>
                                 <a th:href="'/product/view/'+${product.id}" ><button type="button" class="btn btn-success">View</button></a>
                             </td>
 
@@ -58,7 +57,7 @@
 
                         </tbody>
                     </table>
-                    <div style="justify-self: center">
+                    <div class="d-flex justify-content-center">
                         <ul class="pagination">
                             <th:block th:each="page : ${pages}">
                                 <li class="page-item" th:if="${page} == 1">

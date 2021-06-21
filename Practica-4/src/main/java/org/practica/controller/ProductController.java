@@ -6,6 +6,8 @@ import org.practica.services.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
@@ -183,15 +185,20 @@ public class ProductController {
                     Float price = Float.parseFloat(Objects.requireNonNull(ctx.formParam("price")));
                     Boolean active = ctx.formParam("active", Boolean.class).get();
                     String description = ctx.formParam("description", String.class).get();
-                    Product product = new Product(ctx.pathParam("id", Integer.class).get(),name,price,amount,description);
+                    Product product = productService.findProductByActiveTrue(ctx.pathParam("id", Integer.class).get());
+                    product.setDescription(description);
+                    product.setPrice(price);
                     product.setActive(active);
+                    product.setAmount(amount);
+
                     ctx.uploadedFiles("picture").forEach(uploadedFile -> {
                         try {
                             byte[] bytes = uploadedFile.getContent().readAllBytes();
                             String encodedString = Base64.getEncoder().encodeToString(bytes);
                             Picture picture = new Picture(null, uploadedFile.getFilename(), uploadedFile.getContentType(), encodedString);
                             pictureService.create(picture);
-                            product.PictureAdd(picture);
+                            //product.PictureAdd(picture);
+                            product.getPictures().add(picture);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -252,6 +259,12 @@ public class ProductController {
                     model.put("edit", false);
                     model.put("action_form", "/product/comment/"+product.getId());
                     model.put("product", product);
+                    ArrayList<Integer> count = new ArrayList<>();
+                    for (int i = 0; i < product.getPictures().size(); i++){
+                        count.add(i);
+                    }
+
+                    model.put("pictureSize", count);
                     ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
                     if (shoppingCart == null){
                         model.put("cartCount", "Cart(0)");
@@ -286,6 +299,8 @@ public class ProductController {
                     Comments comments = new Comments();
                     comments.setComment(comment_given);
                     comments.setDate(LocalDate.now());
+                    comments.setTime(LocalTime.now());
+
                     if (client == null){
                         comments.setEmail(name);
                     }else {

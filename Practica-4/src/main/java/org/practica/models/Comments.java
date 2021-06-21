@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -20,5 +21,7 @@ public class Comments implements Serializable {
     private String email;
     @Column
     private LocalDate date;
+    @Column
+    private LocalTime time;
 
 }

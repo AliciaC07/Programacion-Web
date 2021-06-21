@@ -29,7 +29,7 @@ public class UserController {
             path("/user", () ->{
                 get("/", ctx -> {
                     Map<String, Object> model = new HashMap<>();
-                    model.put("title", "Shop");
+                    model.put("title", "Loging");
                     if (ctx.cookie("userToken") != null){
                         ctx.redirect("/product");
                     }else if (ctx.sessionAttribute("user") != null){

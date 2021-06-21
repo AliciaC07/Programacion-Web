@@ -11,9 +11,6 @@
       const amount = parseInt(document.getElementById("inQuantity").value);
       const stock = parseInt(document.getElementById("inAmount").value);
       const buying = document.getElementById("buy").value;
-      console.log(buying);
-       console.log(amount);
-      console.log(stock);
       if (amount > stock && buying){
         $("#inQuantity").addClass("is-invalid");
         alert("The given quantity is not valid");
@@ -23,6 +20,23 @@
         return true;
       }
     }
+
+  </script>
+  <script>
+    function verify(){
+      const files = document.getElementById("inputGroupFile02");
+      const button = document.getElementById("btnSumi");
+      const selectedFile = [...files.files];
+      console.log(selectedFile);
+      if (selectedFile.length > 3){
+        alert("The quantity of photos is not valid");
+        button.disabled = true;
+        return false;
+      }
+      button.disabled = false;
+      return true;
+    }
+
 
   </script>
 
@@ -64,14 +78,10 @@
               <label for="exampleTextarea" class="form-label mt-4">Description</label>
               <textarea class="form-control" th:readonly="${buying} " name="description" th:text="${product} ? ${product.description} : ''" placeholder="Description..." id="exampleTextarea" rows="3" required></textarea>
             </div>
-<!--            <div class="form-group" th:hidden="${buying}">-->
-<!--              <label for="file" class="form-label mt-4">Product Photos</label>-->
-<!--              <input class="form-control" type="file" name="picture" id="file" th:hidden="${buyin}" multiple>-->
-<!--            </div>-->
-            <div class="form-group" th:hidden="${buying}">
+            <div class="form-group" th:hidden="(${product} ? (${product.getPictures().size()} == 3 ? true : false) : false) or ${buying}">
               <div class="input-group mb-3">
                 <div class="custom-file">
-                  <input type="file" class="custom-file-input" name="picture" accept="image/*"  th:hidden="${buyin}" multiple  id="inputGroupFile02">
+                  <input type="file" class="custom-file-input" name="picture" accept="image/*" onchange="verify()"  th:hidden="${buyin}" multiple  id="inputGroupFile02">
                   <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
                 </div>
                 <div class="input-group-append">
@@ -91,7 +101,7 @@
 
       </div>
       <div class="card-footer">
-        <button type="submit" class="btn btn-primary"  th:hidden="${buying}" th:text="${product} ? 'Edit' : 'Create'" >Create</button>
+        <button type="submit" class="btn btn-primary" id="btnSumi" th:hidden="${buying}" th:text="${product} ? 'Edit' : 'Create'" >Create</button>
         <button type="submit" class="btn btn-success" th:disabled="${product} ? (${product.amount} > 0 ? false : true) : true"  th:hidden= "${isLogged}">Add to cart</button>
         <a class="btn btn-danger" href="/product">Cancel</a>
       </div>
