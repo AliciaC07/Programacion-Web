@@ -18,20 +18,20 @@ org/practica/models/Client.java
  org.practica.models.Client
 org/practica/models/Receipt.java
  org.practica.models.Receipt
-org/practica/services/CookieVerificationService.java
- org.practica.services.CookieVerificationService
 org/practica/services/Shop.java
  org.practica.services.Shop
+org/practica/services/CookieVerificationService.java
+ org.practica.services.CookieVerificationService
 org/practica/controller/UserController.java
  org.practica.controller.UserController
 org/practica/services/CommentService.java
  org.practica.services.CommentService
 org/practica/services/ProductService.java
  org.practica.services.ProductService
-org/practica/controller/ProductController.java
- org.practica.controller.ProductController
 org/practica/models/ReceiptDetail.java
  org.practica.models.ReceiptDetail
+org/practica/controller/ProductController.java
+ org.practica.controller.ProductController
 org/practica/services/ReceiptService.java
  org.practica.services.ReceiptService
 org/practica/services/BootStrapService.java
