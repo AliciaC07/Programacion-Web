@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.css" type="text/css">
+  <title th:text="${title}">Prueba</title>
+</head>
+<body>
+<header th:replace="base.html :: header"></header>
+<div class="row justify-content-md-center align-items-center" style="margin-top: -12; margin-top: 50px; margin-bottom: 40px;">
+    <h2>Sales List</h2>
+</div>
+<div class="container">
+    <div th:each="receipt : ${receipts}" >
+        <div class="col"></div>
+
+        <div>
+            <h5 th:text="${receipt.client.name} +' '+ ${receipt.client.lastName}+'-'+${receipt.client.email}+ '-'+ ${receipt.date}"></h5>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th class="text-center" scope="col" >Product</th>
+                        <th class="text-center" scope="col">Price</th>
+                        <th class="text-center" scope="col">Quantity</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="receiptDetail : ${receipt.receiptDetails}">
+                        <td class="text-center" th:text="${receiptDetail.product.name}">Name</td>
+                        <td class="text-center" th:text="${receiptDetail.price}">Price</td>
+                        <td class="text-center" id="quantity" th:text="${receiptDetail.quantity}">Quantity</td>
+
+                    </tr>
+                    <tr>
+                        <td class="text-center" style="font-weight: bold; font-size: 16px">
+                            Total
+                        </td>
+                        <td class="text-center" id="total" th:text="${receipt.total}" style="font-weight: bold; font-size: 16px">00</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+
+        <div class="col"></div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<div th:replace="base.html::javascript">
+</body>
+</html>
