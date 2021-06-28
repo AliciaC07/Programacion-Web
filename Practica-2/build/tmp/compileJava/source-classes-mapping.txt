@@ -1,0 +1,20 @@
+org/practica/models/Product.java
+ org.practica.models.Product
+org/practica/models/User.java
+ org.practica.models.User
+org/practica/models/ShoppingCart.java
+ org.practica.models.ShoppingCart
+org/practica/controller/UserController.java
+ org.practica.controller.UserController
+org/practica/services/Shop.java
+ org.practica.services.Shop
+org/practica/models/Client.java
+ org.practica.models.Client
+org/practica/models/Receipt.java
+ org.practica.models.Receipt
+org/practica/controller/SalesController.java
+ org.practica.controller.SalesController
+org/practica/controller/ProductController.java
+ org.practica.controller.ProductController
+org/practica/Main.java
+ org.practica.Main
