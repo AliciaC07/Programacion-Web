@@ -30,7 +30,7 @@ public class ProductService extends Repository<Product> {
     }
     public List<Product> findAllByActiveTruePagination(int pageSize, int lastPageNumber){
         EntityManager entityManager = getEntityManager();
-        Query selectQuery = entityManager.createQuery("select p from Product p where p.active = true");
+        Query selectQuery = entityManager.createQuery("select p from Product p where p.active = true order by p.id");
         selectQuery.setFirstResult((lastPageNumber - 1) * pageSize);
         selectQuery.setMaxResults(pageSize);
         List<Product> lastPage = selectQuery.getResultList();

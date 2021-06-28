@@ -44,7 +44,6 @@ public class ProductController {
                     }
                     Integer pageSize = 4;
                     Integer total = (productService.findAllByActiveTrue().size()+(pageSize-1))/pageSize;
-                    System.out.println(total);
                     ArrayList<Integer> pages = new ArrayList<>();
                     for (int i =0; i < total; i++){
                         pages.add(i+1);
@@ -62,9 +61,6 @@ public class ProductController {
                     model.put("pages", pages);
                     model.put("products", productService.findAllByActiveTruePagination(pageSize, currentPage));
                     model.put("totalPages", total);
-                    List<Product> p = productService.findAllByActiveTruePagination(pageSize,currentPage);
-                    System.out.println(p.size());
-                    System.out.println(p.get(0).getName());
                     ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
                     if (shoppingCart == null){
                         model.put("cartCount", "Cart(0)");
@@ -125,7 +121,6 @@ public class ProductController {
                         return;
                     }
                     Product product = new Product(null,name,price,amount, description);
-                    var file = ctx.uploadedFiles("picture");
                     ctx.uploadedFiles("picture").forEach(uploadedFile -> {
                         try {
                             byte[] bytes = uploadedFile.getContent().readAllBytes();
@@ -195,8 +190,6 @@ public class ProductController {
                     product.setPrice(price);
                     product.setActive(active);
                     product.setAmount(amount);
-
-                    System.out.println(ctx.uploadedFiles("picture").size());
                         ctx.uploadedFiles("picture").forEach(uploadedFile -> {
                             try {
                                 byte[] bytes = uploadedFile.getContent().readAllBytes();
@@ -268,12 +261,6 @@ public class ProductController {
                     model.put("edit", false);
                     model.put("action_form", "/product/comment/"+product.getId());
                     model.put("product", product);
-                    ArrayList<Integer> count = new ArrayList<>();
-                    for (int i = 0; i < product.getPictures().size(); i++){
-                        count.add(i);
-                    }
-
-                    model.put("pictureSize", count);
                     ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
                     if (shoppingCart == null){
                         model.put("cartCount", "Cart(0)");
@@ -470,8 +457,6 @@ public class ProductController {
                         receiptService.create(receipt);
                         ctx.sessionAttribute("cart", null);
                         ctx.redirect("/product");
-                        System.out.println(shoppingCart.getTotal());
-
                     }else{
                         receipt.setClient(client);
                         List<ReceiptDetail> receiptDetails = shop.buildReceiptDetail(shoppingCart, receipt);
@@ -482,8 +467,8 @@ public class ProductController {
                         receipt.setTotal(shoppingCart.getTotal());
                         receiptService.create(receipt);
                         ctx.sessionAttribute("cart", null);
-                        System.out.println(shoppingCart.getTotal());
                         ctx.redirect("/product");
+
 
                     }
 

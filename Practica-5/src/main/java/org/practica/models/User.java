@@ -9,6 +9,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Entity
+@Table(name = "app_user")
 @NamedQueries({@NamedQuery(name = "User.findUserByUsername", query = "select u from User  u where u.userName like :username")})
 public class User implements Serializable {
 

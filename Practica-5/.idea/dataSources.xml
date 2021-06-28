@@ -22,5 +22,12 @@
       <jdbc-url>jdbc:h2:tcp://localhost:9092/~/easy_shop_ORM</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="PostgreSQL - deolulf1dts1ij@ec2-54-158-232-223.compute-1.amazonaws.com" uuid="3993bf75-e4df-46c3-9015-f27906ac291c">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://ec2-54-158-232-223.compute-1.amazonaws.com:5432/deolulf1dts1ij</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

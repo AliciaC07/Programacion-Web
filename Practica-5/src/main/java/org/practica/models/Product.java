@@ -32,13 +32,13 @@ public class Product implements Serializable {
     @Column
     private String description;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private List<ReceiptDetail> receiptDetails;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     private Set<Picture> pictures = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     private List<Comments> comments = new ArrayList<>();
 
 
