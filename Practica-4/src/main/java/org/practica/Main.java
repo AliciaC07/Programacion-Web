@@ -22,7 +22,7 @@ public class Main {
             config.registerPlugin(new RouteOverviewPlugin("/rutas"));
             config.enableCorsForAllOrigins();
             JavalinRenderer.register(JavalinThymeleaf.INSTANCE, ".html");
-        }).start(7001);
+        }).start(7002);
         BootStrapService.startDb();
         ArrayList<Product> products = new ArrayList<>();
         products.add(new Product(null, "Milk", 10.00f, 3, "Product"));
