@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="de89923c-0248-41ec-ba4d-f65b2daae513" name="Default Changelist" comment="Heroku funcionando">
-      <change beforePath="$PROJECT_DIR$/Practica-5/src/main/java/org/practica/controller/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Practica-5/src/main/java/org/practica/controller/ProductController.java" afterDir="false" />
-    </list>
+    <list default="true" id="de89923c-0248-41ec-ba4d-f65b2daae513" name="Default Changelist" comment="Actualizacion codigo funcionando en heroku" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -165,6 +163,7 @@
       <workItem from="1624489941253" duration="89000" />
       <workItem from="1624558287052" duration="98000" />
       <workItem from="1624908399578" duration="80000" />
+      <workItem from="1624908768712" duration="69000" />
     </task>
     <task id="LOCAL-00001" summary="Start of the method for the header task.">
       <created>1622047255324</created>
@@ -194,7 +193,14 @@
       <option name="project" value="LOCAL" />
       <updated>1624908409301</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Actualizacion codigo funcionando en heroku">
+      <created>1624908794133</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1624908794133</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -218,6 +224,7 @@
     <MESSAGE value="Arreglo del metodo CountLines" />
     <MESSAGE value="Arreglo de carpetas" />
     <MESSAGE value="Heroku funcionando" />
-    <option name="LAST_COMMIT_MESSAGE" value="Heroku funcionando" />
+    <MESSAGE value="Actualizacion codigo funcionando en heroku" />
+    <option name="LAST_COMMIT_MESSAGE" value="Actualizacion codigo funcionando en heroku" />
   </component>
 </project>
