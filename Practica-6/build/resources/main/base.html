@@ -53,9 +53,9 @@
         console.info("Iniciando Jquery -  Ejemplo WebServices");
 
         conectar();
-        $("#sendComment").click(function(){
-          webSocket.send($("#emailClient").val());
-        });
+        // $("#deleteComment").click(function(){
+        //   webSocket.send(commentId.val());
+        // });
 
       });
 
@@ -67,16 +67,29 @@
         console.log("Recibiendo del servidor: "+mensaje.data)
         $("#cantidad").text(mensaje.data);
       }
+      function receiveResponse(message){
+        console.log(message.id);
+      }
+      function receiveCommentInfo(comment){
+        console.log(comment);
+        webSocket.send(comment);
+        webSocket.onmessage = function(id){receiveResponse(id); };
+
+      }
 
       function conectar() {
         webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/");
 
         //indicando los eventos:
-        webSocket.onmessage = function(data){recibirInformacionServidor(data);};
+        webSocket.onmessage = function(data){recibirInformacionServidor(data); };
         webSocket.onopen  = function(e){ console.log("Conectado - status "+this.readyState); };
         webSocket.onclose = function(e){
           console.log("Desconectado - status "+this.readyState);
         };
+      }
+      function deleteComment(){
+        webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/delete-comment");
+        webSocket.onmessage = function(data){receiveResponse(data); };
       }
 
       function verificarConexion(){

@@ -116,7 +116,6 @@
             <h2>Comments</h2>
         </div>
         <div th:each="comment : ${product.comments} " >
-
             <div class="card bg-secondary">
                 <div class="card-header">
                     <h6 th:text="${comment.email} +'                   '+ ${comment.date}+'        '+${comment.time}"></h6>
@@ -127,7 +126,7 @@
                     </div>
                 </div>
                 <div class="card-footer" th:hidden ="!${isLogged}">
-                    <a th:hidden="!${isLogged}" th:href="'/product/comment/remove/'+${comment.id}+'/'+${product.id}" ><button type="button" class="btn btn-danger" id="deleteComment" style="float: right">Delete</button></a>
+                    <a th:hidden="!${isLogged}"  th:onclick="'receiveCommentInfo(\'' + ${comment.id} + '\');'" th:href="'/product/comment/remove/'+${comment.id}+'/'+${product.id}" ><button type="button" class="btn btn-danger" id="deleteComment" style="float: right">Delete</button></a>
 
                 </div>
             </div>

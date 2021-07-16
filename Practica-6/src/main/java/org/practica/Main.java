@@ -30,7 +30,8 @@ public class Main {
     public static void main(String[] args) throws SQLException {
         Javalin app = Javalin.create((config) -> {
             config.addStaticFiles("/public");
-            config.registerPlugin(new RouteOverviewPlugin("/rutas"));
+            config.registerPlugin(new RouteOverviewPlugin("/public"));
+            config.addStaticFiles("/public");
             config.enableCorsForAllOrigins();
             JavalinRenderer.register(JavalinThymeleaf.INSTANCE, new String[]{".html"});
         }).start(7001);

@@ -8,14 +8,13 @@ import java.io.IOException;
 
 public class WebSocketController {
     private final Javalin app;
-    //ArrayList<Session> userConnected = new ArrayList<>();
     private Shop shop = Shop.getInstance();
 
     public WebSocketController(Javalin app) {
         this.app = app;
     }
     public void applyRoutes(){
-        app.ws("/*", ws -> {
+        app.ws("/", ws -> {
 //guardar el usuario
 
             ws.onConnect(ctx -> {
@@ -23,7 +22,6 @@ public class WebSocketController {
                 shop.addUserConnected(ctx.session);
                 sendInfoClientDisconnect();
             });
-
             ws.onMessage(ctx -> {
                 //Puedo leer los header, parametros entre otros.
                 ctx.headerMap();
@@ -34,8 +32,10 @@ public class WebSocketController {
                 System.out.println("Mensaje: "+ctx.message());
                 System.out.println("================================");
                 //
-                //enviarMensajeAClientesConectados(ctx.message(), "azul");
-                sendInfoClientDisconnect();
+                commentRemove(ctx.message());
+
+
+
             });
 
             ws.onClose(ctx -> {
@@ -48,11 +48,23 @@ public class WebSocketController {
                 System.out.println("Ocurrió un error en el WS");
             });
         });
+
+    }
+    public void commentRemove(String id){
+        System.out.println("esa vaina"+id);
+        for(Session sesionConectada : shop.getUserConnected()){
+            try {
+                sesionConectada.getRemote().sendString("Respuesta server:"+id);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
     public void  sendInfoClientDisconnect(){
         for(Session sesionConectada : shop.getUserConnected()){
             try {
-                sesionConectada.getRemote().sendString("Users connected: "+String.valueOf(shop.getUserConnected().size()));
+                sesionConectada.getRemote().sendString("Users connected: "+ shop.getUserConnected().size());
             } catch (IOException e) {
                 e.printStackTrace();
             }

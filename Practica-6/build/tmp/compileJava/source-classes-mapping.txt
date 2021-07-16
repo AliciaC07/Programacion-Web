@@ -32,19 +32,19 @@ org/practica/config/JwtGen.java
  org.practica.config.JwtGen
 org/practica/models/Product.java
  org.practica.models.Product
-org/practica/Main.java
- org.practica.Main
+org/practica/services/UserService.java
+ org.practica.services.UserService
 org/practica/services/CookieVerificationService.java
  org.practica.services.CookieVerificationService
-org/practica/controller/WebSocketController.java
- org.practica.controller.WebSocketController
+org/practica/services/PictureService.java
+ org.practica.services.PictureService
 org/practica/services/CommentService.java
  org.practica.services.CommentService
 org/practica/models/ReceiptDetail.java
  org.practica.models.ReceiptDetail
 org/practica/services/BootStrapService.java
  org.practica.services.BootStrapService
-org/practica/services/PictureService.java
- org.practica.services.PictureService
-org/practica/services/UserService.java
- org.practica.services.UserService
+org/practica/Main.java
+ org.practica.Main
+org/practica/controller/WebSocketController.java
+ org.practica.controller.WebSocketController
