@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.css" type="text/css">
+    <title th:text="${title}">Prueba</title>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/product">EasyShop</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link " href="/product">Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:hidden="${isLogged}" th:text="${cartCount}" href="/product/shopping-cart">Cart</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:hidden="!${isLogged}" href="/receipt">Sales</a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:hidden="${logged}"class="nav-link" href="/user/register">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:hidden="${logged}"class="nav-link" href="/user">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:hidden="!${logged}" href="/user/logout">Logout</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="row justify-content-md-center align-items-center" style="margin-top: 50px">
+    <div class="col"></div>
+    <div class="card-body">
+        <form id="form-login" method="post" action="user/login">
+            <fieldset>
+                <legend>Login</legend>
+                <div class="form-group">
+                    <label for="userName" class="form-label mt-4">Username</label>
+                    <input type="text" name="userName" class="form-control" id="userName" aria-describedby="emailHelp" placeholder="Username" required>
+
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label mt-4">Password</label>
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+                </div>
+                <div class="form-check form-switch" style="margin-bottom: 10px">
+                    <input class="form-check-input" type="checkbox" name= "signed" id="signed">
+                    <label class="form-check-label" for="signed">Stay signed</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Login</button>
+            </fieldset>
+        </form>
+    </div>
+    <div class="col"></div>
+</div>
+
+<div th:replace="base.html::javascript">
+</div>
+</body>
+</html>
