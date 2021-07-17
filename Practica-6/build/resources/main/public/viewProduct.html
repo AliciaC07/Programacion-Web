@@ -10,8 +10,149 @@
     <title th:text="${title}">Prueba</title>
 </head>
 <body>
-<header th:replace="base.html :: header"></header>
+<header th:fragment="header">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/product">EasyShop</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link " href="/product">Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:hidden="${isLogged}" th:text="${cartCount}" href="/product/shopping-cart">Cart</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:hidden="!${isLogged}" href="/receipt">Sales</a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:hidden="${logged}"class="nav-link" href="/user/register">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:hidden="${logged}"class="nav-link" href="/user">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:hidden="!${logged}" href="/user/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        //abriendo el objeto para el websocket
+        var webSocket;
+        var webSocket2;
+        var webSocket3;
+        var tiempoReconectar = 5000;
+
+
+
+        $(document).ready(function(){
+            console.info("Iniciando Jquery -  Ejemplo WebServices");
+            conectar()
+            connect()
+            sendCommentComment()
+
+
+        });
+
+        /**
+         *
+         * @param mensaje
+         */
+
+        function receiveResponse(message){
+            console.log(message.data);
+            let con = "#comment-block-"+message.data
+           $(con).remove()
+        }
+        function receiveCommentInfo(comment){
+            console.log(comment);
+            webSocket2.send(comment);
+            webSocket2.onmessage = function(comments){receiveResponse(comments); };
+
+        }
+        function receiveNewComments(message){
+            console.log(message.data)
+        }
+        function sendComment(product){
+            let clienrName = $('#clientName').val()
+            let email = $('#emailClient').val()
+            let commentText = $('#comment').val()
+            console.log(clienrName);
+            console.log(email);
+            const comm = {
+                clientName: clienrName,
+                email: email,
+                commentText: commentText,
+                product: product
+            };
+            webSocket3.send(JSON.stringify(comm));
+            webSocket3.onmessage = function(comments){receiveNewComments(comments); };
+            $('#comment').val('')
+
+        }
+
+        function conectar() {
+            webSocket2 = new WebSocket("ws://" + location.hostname + ":" + location.port + "/view-delete");
+
+            //indicando los eventos:
+            webSocket2.onmessage = function (data){receiveResponse(data)};
+            webSocket2.onopen  = function(e){ console.log("Conectado - status "+this.readyState); };
+            webSocket2.onclose = function(e){
+                console.log("Desconectado - status "+this.readyState);
+            };
+        }
+        function sendCommentComment() {
+            webSocket3 = new WebSocket("ws://" + location.hostname + ":" + location.port + "/add-comment");
+
+            //indicando los eventos:
+            webSocket3.onmessage = function (data){receiveNewComments(data)};
+            webSocket3.onopen  = function(e){ console.log("Conectado - status "+this.readyState); };
+            webSocket3.onclose = function(e){
+                console.log("Desconectado - status "+this.readyState);
+            };
+        }
+        function recibirInformacionServidor(mensaje){
+             console.log("Recibiendo del servidor: "+mensaje.data)
+               $("#cantidad").text(mensaje.data);
+            }
+        function connect() {
+            webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/users-conected");
+
+            //indicando los eventos:
+            webSocket.onmessage = function (data){recibirInformacionServidor(data)};
+            webSocket.onopen  = function(e){ console.log("Conectado - status "+this.readyState); };
+            webSocket.onclose = function(e){
+                console.log("Desconectado - status "+this.readyState);
+            };
+        }
+
+        // function verificarConexion(){
+        //     if(!webSocket || webSocket.readyState === 3){
+        //         conectar();
+        //     }
+        // }
+
+       // setInterval(verificarConexion, tiempoReconectar); //para reconectar.
+
+    </script>
+</header>
+<div class="row justify-content-md-center align-items-center" style="margin-top: -12; margin-top: 20px; align-content: flex-end margin-bottom: 20px;">
+    <div class="col-6 col-md-4">
+    </div>
+    <div class="col-6 col-md-4">
+    </div>
+    <p id="cantidad"></p>
+
+</div>
 <div class="row justify-content-md-center align-items-center" style="margin-top: 50px">
     <div class="col"></div>
 
@@ -76,7 +217,7 @@
 <div class="row justify-content-md-center align-items-center" style="margin-top: 50px">
     <div class="col"></div>
     <div class="container">
-        <form method="post" id="formComment" th:attr="action=${action_form}">
+<!--       <form method="post" id="formComment" onclick="sendComment()">-->
             <div class="card bg-secondary">
                 <div class="card-body">
                     <h2>Leave a Comment</h2>
@@ -85,13 +226,13 @@
                         <div class="col-sm-4">
                             <div class=" form-group">
                                 <label for="clientName" class="form-label mt-4">Name</label>
-                                <input type="text" name="nameClient" class="form-control "  id="clientName" aria-describedby="emailHelp" placeholder="Enter name" required>
+                                <input type="text" name="nameClient" th:readOnly="${client} ? true: false" th:value="${client} ? ${client.name} : ''" class="form-control "  id="clientName" aria-describedby="emailHelp" placeholder="Enter name" required>
                             </div>
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <label for="emailClient" class="form-label mt-4">Email</label>
-                                <input type="email" class="form-control" id="emailClient" name = "emailClient" aria-describedby="emailHelp" placeholder="Enter email">
+                                <input type="email" class="form-control" id="emailClient" th:readOnly="${client} ? true: false" th:value="${client} ? ${client.email} : ''" name = "emailClient" aria-describedby="emailHelp" placeholder="Enter email">
                             </div>
                         </div>
                     </div>
@@ -101,10 +242,10 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-primary" id="sendComment" th:disabled="${isLogged}" style="float: right">Send</button>
+                    <button type="submit" class="btn btn-primary"  id="sendComment" th:onclick="'sendComment(\'' + ${product.id} + '\');'"  th:disabled="${isLogged}" style="float: right">Send</button>
                 </div>
             </div>
-        </form>
+<!--        </form>-->
     </div>
     <div class="col"></div>
 
@@ -115,8 +256,8 @@
         <div>
             <h2>Comments</h2>
         </div>
-        <div th:each="comment : ${product.comments} " >
-            <div class="card bg-secondary">
+        <div  th:each="comment : ${product.comments} " id="block-com" >
+            <div class="card bg-secondary" th:id="'comment-block-' + ${comment.id}">
                 <div class="card-header">
                     <h6 th:text="${comment.email} +'                   '+ ${comment.date}+'        '+${comment.time}"></h6>
                 </div>
@@ -126,7 +267,7 @@
                     </div>
                 </div>
                 <div class="card-footer" th:hidden ="!${isLogged}">
-                    <a th:hidden="!${isLogged}"  th:onclick="'receiveCommentInfo(\'' + ${comment.id} + '\');'" th:href="'/product/comment/remove/'+${comment.id}+'/'+${product.id}" ><button type="button" class="btn btn-danger" id="deleteComment" style="float: right">Delete</button></a>
+                    <a th:hidden="!${isLogged}"  th:onclick="'receiveCommentInfo(\'' + ${comment.id} + '\');'"  ><button type="button" class="btn btn-danger" id="deleteComment" style="float: right">Delete</button></a>
 
                 </div>
             </div>

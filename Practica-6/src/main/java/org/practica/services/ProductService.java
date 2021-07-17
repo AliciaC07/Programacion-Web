@@ -44,6 +44,16 @@ public class ProductService extends Repository<Product> {
         List<Product> products = query.getResultList();
         return products.get(0);
     }
+    public Product findByCommentId(Integer id){
+        EntityManager entityManager = getEntityManager();
+        Query query = entityManager.createNativeQuery("SELECT PRODUCT_ID FROM PRODUCT_COMMENTS  WHERE COMMENTS_ID = ?");
+        query.setParameter(1, id);
+        List<Integer> idP = query.getResultList();
+        Product product = findProductByActiveTrue(idP.get(0));
+        return product;
+
+    }
+
 
 
 

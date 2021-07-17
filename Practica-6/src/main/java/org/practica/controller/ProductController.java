@@ -342,6 +342,8 @@ public class ProductController {
                                 model.put("logged", true);
                             }else if (user.getRol().equalsIgnoreCase("User")){
                                 model.put("isLogged", false);
+                                Client client = clientService.findClientByEmail(user.getUserName());
+                                model.put("client",client);
                                 model.put("logged", true);
                             }
                         }else{
@@ -357,6 +359,8 @@ public class ProductController {
                         }else if (user.getRol().equalsIgnoreCase("User")){
                             model.put("isLogged", false);
                             model.put("logged", true);
+                            Client client = clientService.findClientByEmail(user.getUserName());
+                            model.put("client",client);
                         }
                     }else {
                         ctx.redirect("/user");
