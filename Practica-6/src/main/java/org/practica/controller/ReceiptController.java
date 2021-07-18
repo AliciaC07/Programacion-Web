@@ -66,7 +66,7 @@ public class ReceiptController {
                         return;
                     }
                     model.put("receipts", receiptService.findAllReceipt());
-
+                    receiptService.getQuantitySold();
                     ctx.render("/public/sales.html", model);
 
 

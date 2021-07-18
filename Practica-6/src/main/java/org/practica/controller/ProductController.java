@@ -538,48 +538,50 @@ public class ProductController {
 
                 });
                 post("/shopping-cart/buy", ctx -> {
-                    String name = ctx.formParam("nameClient");
-                    String lastName = ctx.formParam("lastNameClient");
-                    String email =  ctx.formParam("emailClient");
-                    Client client = clientService.findClientByEmail(email);
-                    ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
-                    Receipt receipt = new Receipt();
+//                    String name = ctx.formParam("nameClient");
+//                    String lastName = ctx.formParam("lastNameClient");
+//                    String email =  ctx.formParam("emailClient");
+//                    Client client = clientService.findClientByEmail(email);
+//                    ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
+//                    Receipt receipt = new Receipt();
                     Map<String, String> cookie  = cookieVerificationService.findByCookieToken(ctx.cookie("userToken"));
                     if (shop.tokenVerify(cookie.get("user"), (cookie.get("token")))){
                         ctx.redirect("/product");
                     }
-                    if (client == null){
-                        Client newClient = new Client();
-                        newClient.setLastName(lastName);
-                        newClient.setName(name);
-                        newClient.setEmail(email);
-                        clientService.create(newClient);
-                        receipt.setClient(newClient);
-                        List<ReceiptDetail> receiptDetails = shop.buildReceiptDetail(shoppingCart, receipt);
-                        receipt.setReceiptDetails(receiptDetails);
-                        User user = userService.findByUserName("aliciac07");
-                        receipt.setSalesman(user);
-                        receipt.setDate(LocalDate.now());
-                        receipt.setTotal(shoppingCart.getTotal());
-                        receiptService.create(receipt);
-                        ctx.sessionAttribute("cart", null);
-                        ctx.redirect("/product");
-                        System.out.println(shoppingCart.getTotal());
-
-                    }else{
-                        receipt.setClient(client);
-                        List<ReceiptDetail> receiptDetails = shop.buildReceiptDetail(shoppingCart, receipt);
-                        receipt.setReceiptDetails(receiptDetails);
-                        User user = userService.findByUserName("aliciac07");
-                        receipt.setSalesman(user);
-                        receipt.setDate(LocalDate.now());
-                        receipt.setTotal(shoppingCart.getTotal());
-                        receiptService.create(receipt);
-                        ctx.sessionAttribute("cart", null);
-                        System.out.println(shoppingCart.getTotal());
-                        ctx.redirect("/product");
-
-                    }
+//                    if (client == null){
+//                        Client newClient = new Client();
+//                        newClient.setLastName(lastName);
+//                        newClient.setName(name);
+//                        newClient.setEmail(email);
+//                        clientService.create(newClient);
+//                        receipt.setClient(newClient);
+//                        List<ReceiptDetail> receiptDetails = shop.buildReceiptDetail(shoppingCart, receipt);
+//                        receipt.setReceiptDetails(receiptDetails);
+//                        User user = userService.findByUserName("aliciac07");
+//                        receipt.setSalesman(user);
+//                        receipt.setDate(LocalDate.now());
+//                        receipt.setTotal(shoppingCart.getTotal());
+//                        receiptService.create(receipt);
+//                        ctx.sessionAttribute("cart", null);
+//                        ctx.redirect("/product");
+//                        System.out.println(shoppingCart.getTotal());
+//
+//                    }else{
+//                        receipt.setClient(client);
+//                        List<ReceiptDetail> receiptDetails = shop.buildReceiptDetail(shoppingCart, receipt);
+//                        receipt.setReceiptDetails(receiptDetails);
+//                        User user = userService.findByUserName("aliciac07");
+//                        receipt.setSalesman(user);
+//                        receipt.setDate(LocalDate.now());
+//                        receipt.setTotal(shoppingCart.getTotal());
+//                        receiptService.create(receipt);
+//                        ctx.sessionAttribute("cart", null);
+//                        System.out.println(shoppingCart.getTotal());
+//                        ctx.redirect("/product");
+//
+//                    }
+                    ctx.sessionAttribute("cart", null);
+                    ctx.redirect("/product");
 
                 });
 

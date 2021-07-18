@@ -58,7 +58,6 @@
             console.info("Iniciando Jquery -  Ejemplo WebServices");
             conectar()
             connect()
-            sendCommentComment()
 
 
         });
@@ -79,27 +78,66 @@
             webSocket2.onmessage = function(comments){receiveResponse(comments); };
 
         }
-        function receiveNewComments(message){
-            console.log(message.data)
-        }
-        function sendComment(product){
-            let clienrName = $('#clientName').val()
-            let email = $('#emailClient').val()
-            let commentText = $('#comment').val()
-            console.log(clienrName);
-            console.log(email);
-            const comm = {
-                clientName: clienrName,
-                email: email,
-                commentText: commentText,
-                product: product
-            };
-            webSocket3.send(JSON.stringify(comm));
-            webSocket3.onmessage = function(comments){receiveNewComments(comments); };
-            $('#comment').val('')
-
-        }
-
+        // function receiveNewComments(message){
+        //     console.log(message.data)
+        //
+        // }
+        // function buildComments(message){
+        //     const json = JSON.parse(message.data)
+        //     console.log(json)
+        //     const conta = document.getElementById('conte')
+        //     const card = document.createElement('div')
+        //     jQuery('<div/>', {
+        //         id: 'foo',
+        //         css: {
+        //             fontWeight: 700,
+        //             color: 'green'
+        //         },
+        //     });
+        //     card.attr('id', 'block-com')
+        //     console.log(card)
+        //     const carDiv1 = document.createElement('div')
+        //     carDiv1.attr('id', 'comment-block-'+json.id)
+        //     carDiv1.addClass('card bg-secondary')
+        //     const bodyHeader = document.createElement('div')
+        //     bodyHeader.attr('id', 'comment-card')
+        //     bodyHeader.addClass('card-header')
+        //     const bb = "<h6>"+json.email+"       "+json.date.day+"/"+json.date.month+"/"+json.date.year+"     "+json.time.hour+":"+json.time.minute+":"+json.time.second+"</h6>";
+        //     console.log(bb)
+        //     bodyHeader.append(bb);
+        //     carDiv1.append(bodyHeader);
+        //     const cardBody = document.createElement('div')
+        //     cardBody.attr('id', 'comment-card-body')
+        //     cardBody.addClass('card-body')
+        //     const content = document.createElement('div')
+        //     content.addClass('form-group')
+        //     const com = document.createElement('p')
+        //     com.addClass('form-control')
+        //     com.attr('id', 'commentB')
+        //     com.text(json.commentText)
+        //     content.append(com);
+        //     console.log(carDiv1.content)
+        //     card.append(carDiv1)
+        //     conta.appendChild(card)
+        // }
+        // function sendComment(product){
+        //     let clienrName = $('#clientName').val()
+        //     let email = $('#emailClient').val()
+        //     let commentText = $('#comment').val()
+        //     console.log(clienrName);
+        //     console.log(email);
+        //     const comm = {
+        //         clientName: clienrName,
+        //         email: email,
+        //         commentText: commentText,
+        //         product: product
+        //     };
+        //     webSocket3.send(JSON.stringify(comm));
+        //     webSocket3.onmessage = function(comments){receiveNewComments(comments); };
+        //     $('#comment').val('')
+        //
+        // }
+        ///ssocket para eliminar comment
         function conectar() {
             webSocket2 = new WebSocket("ws://" + location.hostname + ":" + location.port + "/view-delete");
 
@@ -110,20 +148,22 @@
                 console.log("Desconectado - status "+this.readyState);
             };
         }
-        function sendCommentComment() {
-            webSocket3 = new WebSocket("ws://" + location.hostname + ":" + location.port + "/add-comment");
-
-            //indicando los eventos:
-            webSocket3.onmessage = function (data){receiveNewComments(data)};
-            webSocket3.onopen  = function(e){ console.log("Conectado - status "+this.readyState); };
-            webSocket3.onclose = function(e){
-                console.log("Desconectado - status "+this.readyState);
-            };
-        }
+        // ///socket para mandar comment nuevo
+        // function sendCommentComment() {
+        //     webSocket3 = new WebSocket("ws://" + location.hostname + ":" + location.port + "/add-comment");
+        //
+        //     //indicando los eventos:
+        //     webSocket3.onmessage = function (data){receiveNewComments(data)};
+        //     webSocket3.onopen  = function(e){ console.log("Conectado - status "+this.readyState); };
+        //     webSocket3.onclose = function(e){
+        //         console.log("Desconectado - status "+this.readyState);
+        //     };
+        // }
         function recibirInformacionServidor(mensaje){
              console.log("Recibiendo del servidor: "+mensaje.data)
                $("#cantidad").text(mensaje.data);
             }
+        ///socket pa ver los guremates conectados
         function connect() {
             webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/users-conected");
 
@@ -135,13 +175,13 @@
             };
         }
 
-        // function verificarConexion(){
-        //     if(!webSocket || webSocket.readyState === 3){
-        //         conectar();
-        //     }
-        // }
+        function verificarConexion(){
+            if(!webSocket || webSocket.readyState === 3){
+                connect();
+            }
+        }
 
-       // setInterval(verificarConexion, tiempoReconectar); //para reconectar.
+       setInterval(verificarConexion, tiempoReconectar); //para reconectar.
 
     </script>
 </header>
@@ -217,7 +257,7 @@
 <div class="row justify-content-md-center align-items-center" style="margin-top: 50px">
     <div class="col"></div>
     <div class="container">
-<!--       <form method="post" id="formComment" onclick="sendComment()">-->
+       <form method="post" id="formComment" th:attr="action=${action_form}">
             <div class="card bg-secondary">
                 <div class="card-body">
                     <h2>Leave a Comment</h2>
@@ -242,26 +282,26 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-primary"  id="sendComment" th:onclick="'sendComment(\'' + ${product.id} + '\');'"  th:disabled="${isLogged}" style="float: right">Send</button>
+                    <button type="submit" class="btn btn-primary"  id="sendComment"  th:disabled="${isLogged}" style="float: right">Send</button>
                 </div>
             </div>
-<!--        </form>-->
+        </form>
     </div>
     <div class="col"></div>
 
 </div>
 <div class="row justify-content-md-center align-items-center" style="margin-top: 50px">
     <div class="col"></div>
-    <div class="container">
+    <div class="container" id="conte">
         <div>
             <h2>Comments</h2>
         </div>
         <div  th:each="comment : ${product.comments} " id="block-com" >
             <div class="card bg-secondary" th:id="'comment-block-' + ${comment.id}">
-                <div class="card-header">
+                <div class="card-header" id="comment-card">
                     <h6 th:text="${comment.email} +'                   '+ ${comment.date}+'        '+${comment.time}"></h6>
                 </div>
-                <div class="card-body">
+                <div class="card-body" id="comment-card-body">
                     <div class="form-group">
                         <p class="form-control" id="commentB" th:text="${comment.comment}" ></p>
                     </div>

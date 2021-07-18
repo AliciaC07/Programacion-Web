@@ -7,23 +7,21 @@ import lombok.Getter;
 import lombok.Setter;
 import org.eclipse.jetty.util.ajax.JSON;
 import org.eclipse.jetty.websocket.api.Session;
-import org.practica.models.Client;
-import org.practica.models.Comments;
-import org.practica.models.Product;
-import org.practica.services.ClientService;
-import org.practica.services.CommentService;
-import org.practica.services.ProductService;
-import org.practica.services.Shop;
+import org.practica.models.*;
+import org.practica.services.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class WebSocketController {
     private final Javalin app;
     private ArrayList<Session> us = new ArrayList<>();
     private ArrayList<Session> usA = new ArrayList<>();
+    private ArrayList<Session> usS = new ArrayList<>();
+    private ArrayList<Session> usSG = new ArrayList<>();
     private Shop shop = Shop.getInstance();
 
     public WebSocketController(Javalin app) {
@@ -61,7 +59,6 @@ public class WebSocketController {
 
         });
         app.ws("/users-conected", ws -> {
-//guardar el usuario
 
             ws.onConnect(ctx -> {
                 System.out.println("Conexión Iniciada - "+ctx.getSessionId());
@@ -115,8 +112,99 @@ public class WebSocketController {
             });
 
         });
+        app.ws("/sale-made", ws ->{
+            ws.onConnect(ctx -> {
+                System.out.println("Conexión Iniciada - "+ctx.getSessionId());
+                usS.add(ctx.session);
+            });
+
+            ws.onMessage(ctx -> {
+                //Puedo leer los header, parametros entre otros.
+                ctx.headerMap();
+                ctx.pathParamMap();
+                ctx.queryParamMap();
+                //
+                System.out.println("Mensaje Recibido de "+ctx.getSessionId()+" ====== ");
+                System.out.println("Mensaje: "+ctx.message());
+                System.out.println("================================");
+                //
+                totalSales();
+
+
+            });
+            ws.onClose(ctx -> {
+                System.out.println("Conexión Iniciada - "+ctx.getSessionId());
+                usS.remove(ctx.session);
+            });
+
+
+            ws.onError(ctx -> {
+                System.out.println("Ocurrió un error en el WS");
+            });
+        });
+        app.ws("/sale-graph", ws ->{
+            ws.onConnect(ctx -> {
+                System.out.println("Conexión Iniciada - "+ctx.getSessionId());
+                usSG.add(ctx.session);
+            });
+
+            ws.onMessage(ctx -> {
+                //Puedo leer los header, parametros entre otros.
+                ctx.headerMap();
+                ctx.pathParamMap();
+                ctx.queryParamMap();
+                //
+                System.out.println("Mensaje Recibido de "+ctx.getSessionId()+" ====== ");
+                System.out.println("Mensaje: "+ctx.message());
+                System.out.println("================================");
+                //
+                totalSalesGraph(Integer.parseInt(ctx.message()), ctx.sessionAttribute("cart"));
+                totalSales();
+
+            });
+            ws.onClose(ctx -> {
+                System.out.println("Conexión Iniciada - "+ctx.getSessionId());
+                usSG.remove(ctx.session);
+            });
+
+
+            ws.onError(ctx -> {
+                System.out.println("Ocurrió un error en el WS");
+            });
+        });
 
     }
+    public void totalSales(){
+        for(Session sessionConnected : usS){
+            try {
+                sessionConnected.getRemote().sendString(ReceiptService.getInstance().getTotalSales().toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public void totalSalesGraph(Integer id, ShoppingCart shoppingCart){
+        Client client = ClientService.getInstance().find(id);
+        Receipt receipt = new Receipt();
+        receipt.setClient(client);
+        List<ReceiptDetail> receiptDetails = shop.buildReceiptDetail(shoppingCart, receipt);
+        receipt.setReceiptDetails(receiptDetails);
+        User user = UserService.getInstance().findByUserName("aliciac07");
+        receipt.setSalesman(user);
+        receipt.setDate(LocalDate.now());
+        receipt.setTotal(shoppingCart.getTotal());
+        ReceiptService.getInstance().create(receipt);
+        System.out.println(shoppingCart.getTotal());
+
+        for(Session sessionConnected : usSG){
+            try {
+                sessionConnected.getRemote().sendString(new Gson().toJson(ReceiptService.getInstance().getQuantitySold()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void commentAdd(commentParse commentParse){
         Product product = ProductService.getInstance().findProductByActiveTrue(commentParse.getProduct());
 

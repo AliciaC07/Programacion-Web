@@ -1,14 +1,13 @@
 package org.practica.controller;
 
+import com.google.gson.Gson;
 import io.javalin.Javalin;
+import org.h2.engine.Mode;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.practica.models.Client;
 import org.practica.models.CookieVerification;
 import org.practica.models.User;
-import org.practica.services.ClientService;
-import org.practica.services.CookieVerificationService;
-import org.practica.services.Shop;
-import org.practica.services.UserService;
+import org.practica.services.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +39,52 @@ public class UserController {
                         ctx.redirect("/product");
                     }
                     ctx.render("/public/login.html",model);
+                });
+                get("/dashboard", ctx -> {
+                    Map<String, Object> model = new HashMap<>();
+                    if ( ctx.cookie("userToken") != null){
+                        Map<String, String> cookie  = cookieVerificationService.findByCookieToken(ctx.cookie("userToken"));
+                        User user = userService.findByUserName(cookie.get("user"));
+                        if (cookie.get("user") == null){
+                            ctx.redirect("/user");
+                            return;
+                        }else {
+                            if (shop.tokenVerify(cookie.get("user"), (cookie.get("token")))){
+                                if (user.getRol().equalsIgnoreCase("Admin")){
+                                    model.put("isLogged", true);
+                                    model.put("logged", true);
+                                }else if (user.getRol().equalsIgnoreCase("User")){
+                                    model.put("isLogged", false);
+                                    model.put("logged", true);
+                                    ctx.redirect("/user");
+                                    return;
+                                }
+                            }else{
+                                ctx.redirect("/user");
+                                return;
+                            }
+                        }
+
+                    }else if (ctx.sessionAttribute("user") != null){
+                        User user = ctx.sessionAttribute("user");
+                        if (user.getRol().equalsIgnoreCase("Admin")){
+                            model.put("isLogged", true);
+                            model.put("logged", true);
+                        }else if (user.getRol().equalsIgnoreCase("User")){
+                            model.put("isLogged", false);
+                            model.put("logged", true);
+                            ctx.redirect("/user");
+                            return;
+                        }
+
+                    }else {
+                        ctx.redirect("/user");
+                        return;
+                    }
+                    model.put("title", "Dashboard");
+                    model.put("totalSales", ReceiptService.getInstance().getTotalSales());
+                    model.put("graph", new Gson().toJson(ReceiptService.getInstance().getQuantitySold()));
+                    ctx.render("public/dashboard.html", model);
                 });
                 get("/register", ctx -> {
                     Map<String, Object> model = new HashMap<>();

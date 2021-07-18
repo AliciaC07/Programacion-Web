@@ -45,7 +45,8 @@
     <script>
       //abriendo el objeto para el websocket
       var webSocket;
-
+      var webSocket2;
+      var webSocket3;
       var tiempoReconectar = 5000;
 
 
@@ -54,6 +55,8 @@
         console.info("Iniciando Jquery -  Ejemplo WebServices");
 
         connect()
+        verifySales()
+        verifySalesGraph()
 
 
       });
@@ -69,6 +72,23 @@
         console.log("Recibiendo del servidor: "+mensaje.data)
         $("#cantidad").text(mensaje.data);
       }
+      function receiveInfoSales(message){
+        console.log(message.data)
+        $('#total-sales').text(message.data)
+
+      }
+      function receiveInfoSalesGraph(message){
+        console.log(message.data)
+        info = message.data
+        $('#piechart').attr('value',message.data.toString())
+
+
+      }
+      function listenChanges(client){
+        webSocket3.send(client);
+        webSocket3.onmessage = function(comments){receiveInfoSalesGraph(comments); };
+
+      }
       function connect() {
         webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/users-conected");
 
@@ -79,14 +99,41 @@
           console.log("Desconectado - status "+this.readyState);
         };
       }
+      function verifySales() {
+        webSocket2 = new WebSocket("ws://" + location.hostname + ":" + location.port + "/sale-made");
 
-      // function verificarConexion(){
-      //     if(!webSocket || webSocket.readyState === 3){
-      //         conectar();
-      //     }
-      // }
+        //indicando los eventos:
+        webSocket2.onmessage = function (data){receiveInfoSales(data)};
+        webSocket2.onopen  = function(e){ console.log("Conectado - status "+this.readyState); };
+        webSocket2.onclose = function(e){
+          console.log("Desconectado - status "+this.readyState);
+        };
+      }
+      function verifySalesGraph() {
+        webSocket3 = new WebSocket("ws://" + location.hostname + ":" + location.port + "/sale-graph");
 
-      // setInterval(verificarConexion, tiempoReconectar); //para reconectar.
+        //indicando los eventos:
+        webSocket3.onmessage = function (data){receiveInfoSalesGraph(data)};
+        webSocket3.onopen  = function(e){ console.log("Conectado - status "+this.readyState); };
+        webSocket3.onclose = function(e){
+          console.log("Desconectado - status "+this.readyState);
+        };
+      }
+
+      function verificarConexion(){
+          if(!webSocket || webSocket.readyState === 3){
+              conectar();
+          }
+        if(!webSocket2 || webSocket2.readyState === 3){
+          verifySales()
+        }
+        if(!webSocket3 || webSocket3.readyState === 3){
+          verifySalesGraph()
+        }
+
+      }
+
+      setInterval(verificarConexion, tiempoReconectar); //para reconectar.
 
     </script>
   </header>

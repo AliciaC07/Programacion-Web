@@ -10,14 +10,14 @@ org/practica/models/Receipt.java
  org.practica.models.Receipt
 org/practica/models/ReceiptDetail.java
  org.practica.models.ReceiptDetail
-org/practica/controller/UserController.java
- org.practica.controller.UserController
+org/practica/services/ProductService.java
+ org.practica.services.ProductService
 org/practica/services/CommentService.java
  org.practica.services.CommentService
 org/practica/services/BootStrapService.java
  org.practica.services.BootStrapService
-org/practica/services/ReceiptService.java
- org.practica.services.ReceiptService
+org/practica/services/Shop.java
+ org.practica.services.Shop
 org/practica/models/User.java
  org.practica.models.User
 org/practica/services/ClientService.java
@@ -26,8 +26,9 @@ org/practica/models/CookieVerification.java
  org.practica.models.CookieVerification
 org/practica/repository/Repository.java
  org.practica.repository.Repository
-org/practica/controller/ReceiptController.java
- org.practica.controller.ReceiptController
+org/practica/services/ReceiptService.java
+ org.practica.services.ReceiptService
+ org.practica.services.ReceiptService$Quantity
 org/practica/config/JwtGen.java
  org.practica.config.JwtGen
 org/practica/models/Product.java
@@ -38,12 +39,12 @@ org/practica/services/CookieVerificationService.java
  org.practica.services.CookieVerificationService
 org/practica/services/PictureService.java
  org.practica.services.PictureService
-org/practica/services/ProductService.java
- org.practica.services.ProductService
+org/practica/controller/ReceiptController.java
+ org.practica.controller.ReceiptController
+org/practica/controller/UserController.java
+ org.practica.controller.UserController
 org/practica/controller/ProductController.java
  org.practica.controller.ProductController
-org/practica/services/Shop.java
- org.practica.services.Shop
 org/practica/Main.java
  org.practica.Main
 org/practica/controller/WebSocketController.java

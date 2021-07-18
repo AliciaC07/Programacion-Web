@@ -45,6 +45,9 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.8.7'
 
+    compile "com.google.zxing:core:3.4.1"
+    compile 'com.google.zxing:javase:3.4.1'
+
     //Token-Generator
     compile 'io.jsonwebtoken:jjwt-api:0.11.2'
     runtime 'io.jsonwebtoken:jjwt-impl:0.11.2',
