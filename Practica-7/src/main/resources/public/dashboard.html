@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.css" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <title th:text="${title}">Prueba</title>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+<header th:replace="base.html :: header"></header>
+<div class="row justify-content-md-center align-items-center" style="margin-top: -12; margin-top: 20px; align-content: flex-end margin-bottom: 20px;">
+  <div class="col-6 col-md-4">
+  </div>
+  <div class="col-6 col-md-4">
+  </div>
+  <p id="cantidad"></p>
+
+</div>
+<div class="row justify-content-md-center align-items-center" style="margin-top: -12; margin-top: 50px; margin-bottom: 40px;">
+  <h2>Dashboard</h2>
+</div>
+<div th:hidden="true"  id="gra" th:value="${graph}"></div>
+<div class="grid-container row justify-content-md-center align-items-center">
+  <div class="container">
+    <div class="card bg-secondary">
+      <div class="card-header">
+        <a>Resume</a>
+      </div>
+
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-8">
+            <div id="piechart" th:value="${graph}" style="width: 900px; height: 500px;"></div>
+          </div>
+          <div class="col-md-8">
+            <div class="card bg-secondary" >
+
+              <div class="card-body">
+                <h4 class="card-title">Total Sales</h4>
+                <h3 id="total-sales"  th:text="${totalSales}"></h3>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+<script >
+  google.charts.load('current', {'packages':['corechart']});
+  // google.charts.load('current', {
+  //   packages: ['corechart'],
+  //   callback: drawChart
+  // });
+  google.charts.setOnLoadCallback(drawChart1);
+  let info = JSON.parse(document.getElementById('piechart').getAttribute('value'));
+  console.log(info);
+  function drawChart() {
+    let arrayData=[];
+    // var data = google.visualization.arrayToDataTable([
+    //   ['Task', 'Hours per Day'],
+    //   ['Work',     11],
+    //   ['Eat',      2],
+    //   ['Commute',  2],
+    //   ['Watch TV', 2],
+    //   ['Sleep',    7]
+    // ]);
+    //
+    // var options = {
+    //   title: 'My Daily Activities'
+    // };
+    //
+    // var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+    //
+    // chart.draw(data, options);
+    if(info.length > 0){
+      for(let i=0; i < info.length+1; i ++){
+        if(i === 0){
+          arrayData[i] = ['Product', 'Quantity Sold']
+        }else
+          arrayData[i] = [info[i-1].product,info[i-1].total]
+      }
+
+      var data = new google.visualization.arrayToDataTable(arrayData);
+      var options = {
+        title: 'My sales'
+      };
+
+      var chart = new google.visualization.PieChart(
+              document.getElementById('piechart'));
+
+      chart.draw(data, options);
+    }
+  }
+  function drawChart1() {
+    var options = {
+      title: 'My sales'
+    };
+    $.ajax({
+      type: "GET",
+      url: "http://localhost:7001/graph-data",
+      data: '{}',
+      contentType: "application/json; charset=utf-8",
+      success: function (r) {
+        let arrayData=[];
+        if(r.length > 0){
+          for(let i=0; i < r.length+1; i ++){
+            if(i === 0){
+              arrayData[i] = ['Product', 'Quantity Sold']
+            }else
+              arrayData[i] = [r[i-1].product,r[i-1].total]
+          }
+
+          var data = new google.visualization.arrayToDataTable(arrayData);
+          var options = {
+            title: 'My sales'
+          };
+
+          var chart = new google.visualization.PieChart(
+                  document.getElementById('piechart'));
+
+          chart.draw(data, options);
+        }
+        updateChart();
+      }
+    });
+    function updateChart() {
+      $.ajax({
+        type: "GET",
+        url: "http://localhost:7001/graph-data",
+        data: '{}',
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (r) {
+          let arrayData=[];
+          if(r.length > 0){
+            for(let i=0; i < r.length+1; i ++){
+              if(i === 0){
+                arrayData[i] = ['Product', 'Quantity Sold']
+              }else
+                arrayData[i] = [r[i-1].product,r[i-1].total]
+            }
+
+            var data = new google.visualization.arrayToDataTable(arrayData);
+            var options = {
+              title: 'My sales'
+            };
+
+            var chart = new google.visualization.PieChart(
+                    document.getElementById('piechart'));
+
+            chart.draw(data, options);
+          }
+        }
+      });
+
+      setTimeout(function () { updateChart() }, 1000);
+    }
+  }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</html>
