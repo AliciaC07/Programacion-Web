@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.css" type="text/css">
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
 
@@ -15,30 +15,32 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
             <a class="navbar-brand" href="/product">EasyShop</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
-            <div class="collapse navbar-collapse" id="navbarColor01">
-                <ul class="navbar-nav me-auto">
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav ">
                     <li class="nav-item">
                         <a class="nav-link " href="/product">Home
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:hidden="${isLogged}" th:text="${cartCount}" href="/product/shopping-cart">Cart</a>
+                    <li class="nav-item" th:hidden="${isLogged}">
+                        <a class="nav-link"  th:text="${cartCount}" href="/product/shopping-cart">Cart</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:hidden="!${isLogged}" href="/receipt">Sales</a>
+                    <li class="nav-item" th:hidden="!${isLogged}">
+                        <a class="nav-link" href="/receipt">Sales</a>
                     </li>
-                    <li class="nav-item">
-                        <a th:hidden="${logged}"class="nav-link" href="/user/register">Register</a>
+                    <li class="nav-item" th:hidden="!${isLogged}">
+                        <a class="nav-link" href="/user/dashboard">Dashboard</a>
                     </li>
-                    <li class="nav-item">
-                        <a th:hidden="${logged}"class="nav-link" href="/user">Login</a>
+                    <li class="nav-item" th:hidden="${logged}">
+                        <a class="nav-link" href="/user/register">Register</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:hidden="!${logged}" href="/user/logout">Logout</a>
+                    <li class="nav-item" th:hidden="${logged}">
+                        <a class="nav-link" href="/user">Login</a>
+                    </li>
+                    <li class="nav-item"th:hidden="!${logged}">
+                        <a class="nav-link" href="/user/logout">Logout</a>
                     </li>
                 </ul>
             </div>

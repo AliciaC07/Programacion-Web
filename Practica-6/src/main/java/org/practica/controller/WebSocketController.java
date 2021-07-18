@@ -16,12 +16,15 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.javalin.apibuilder.ApiBuilder.get;
+
 public class WebSocketController {
     private final Javalin app;
     private ArrayList<Session> us = new ArrayList<>();
     private ArrayList<Session> usA = new ArrayList<>();
     private ArrayList<Session> usS = new ArrayList<>();
     private ArrayList<Session> usSG = new ArrayList<>();
+    private List<ReceiptService.Quantity> quantities = new ArrayList<>();
     private Shop shop = Shop.getInstance();
 
     public WebSocketController(Javalin app) {
@@ -172,6 +175,9 @@ public class WebSocketController {
                 System.out.println("Ocurrió un error en el WS");
             });
         });
+        app.get("/graph-data", ctx -> {
+            ctx.json(quantities);
+        });
 
     }
     public void totalSales(){
@@ -195,10 +201,11 @@ public class WebSocketController {
         receipt.setTotal(shoppingCart.getTotal());
         ReceiptService.getInstance().create(receipt);
         System.out.println(shoppingCart.getTotal());
+        quantities = ReceiptService.getInstance().getQuantitySold();
 
         for(Session sessionConnected : usSG){
             try {
-                sessionConnected.getRemote().sendString(new Gson().toJson(ReceiptService.getInstance().getQuantitySold()));
+                sessionConnected.getRemote().sendString(new Gson().toJson(quantities));
             } catch (IOException e) {
                 e.printStackTrace();
             }

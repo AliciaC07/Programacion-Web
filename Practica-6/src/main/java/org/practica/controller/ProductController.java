@@ -1,5 +1,6 @@
 package org.practica.controller;
 
+import com.google.gson.Gson;
 import io.javalin.Javalin;
 import org.practica.models.*;
 import org.practica.services.*;
@@ -22,6 +23,7 @@ public class ProductController {
     private UserService userService = UserService.getInstance();
     private ReceiptService receiptService = ReceiptService.getInstance();
     private CommentService commentService = CommentService.getInstance();
+    private List<ReceiptService.Quantity> quantities = new ArrayList<>();
 
     private Shop shop = Shop.getInstance();
 
@@ -537,6 +539,8 @@ public class ProductController {
                     ctx.redirect("/product/shopping-cart");
 
                 });
+
+
                 post("/shopping-cart/buy", ctx -> {
 //                    String name = ctx.formParam("nameClient");
 //                    String lastName = ctx.formParam("lastNameClient");
@@ -544,6 +548,7 @@ public class ProductController {
 //                    Client client = clientService.findClientByEmail(email);
 //                    ShoppingCart shoppingCart = ctx.sessionAttribute("cart");
 //                    Receipt receipt = new Receipt();
+                    //quantities.addAll(receiptService.getQuantitySold());
                     Map<String, String> cookie  = cookieVerificationService.findByCookieToken(ctx.cookie("userToken"));
                     if (shop.tokenVerify(cookie.get("user"), (cookie.get("token")))){
                         ctx.redirect("/product");

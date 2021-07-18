@@ -52,7 +52,11 @@
 </body>
 <script >
   google.charts.load('current', {'packages':['corechart']});
-  google.charts.setOnLoadCallback(drawChart);
+  // google.charts.load('current', {
+  //   packages: ['corechart'],
+  //   callback: drawChart
+  // });
+  google.charts.setOnLoadCallback(drawChart1);
   let info = JSON.parse(document.getElementById('piechart').getAttribute('value'));
   console.log(info);
   function drawChart() {
@@ -92,5 +96,71 @@
       chart.draw(data, options);
     }
   }
+  function drawChart1() {
+    var options = {
+      title: 'My sales'
+    };
+    $.ajax({
+      type: "GET",
+      url: "http://localhost:7001/graph-data",
+      data: '{}',
+      contentType: "application/json; charset=utf-8",
+      success: function (r) {
+        let arrayData=[];
+        if(r.length > 0){
+          for(let i=0; i < r.length+1; i ++){
+            if(i === 0){
+              arrayData[i] = ['Product', 'Quantity Sold']
+            }else
+              arrayData[i] = [r[i-1].product,r[i-1].total]
+          }
+
+          var data = new google.visualization.arrayToDataTable(arrayData);
+          var options = {
+            title: 'My sales'
+          };
+
+          var chart = new google.visualization.PieChart(
+                  document.getElementById('piechart'));
+
+          chart.draw(data, options);
+        }
+        updateChart();
+      }
+    });
+    function updateChart() {
+      $.ajax({
+        type: "GET",
+        url: "http://localhost:7001/graph-data",
+        data: '{}',
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (r) {
+          let arrayData=[];
+          if(r.length > 0){
+            for(let i=0; i < r.length+1; i ++){
+              if(i === 0){
+                arrayData[i] = ['Product', 'Quantity Sold']
+              }else
+                arrayData[i] = [r[i-1].product,r[i-1].total]
+            }
+
+            var data = new google.visualization.arrayToDataTable(arrayData);
+            var options = {
+              title: 'My sales'
+            };
+
+            var chart = new google.visualization.PieChart(
+                    document.getElementById('piechart'));
+
+            chart.draw(data, options);
+          }
+        }
+      });
+
+      setTimeout(function () { updateChart() }, 1000);
+    }
+  }
 </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </html>
